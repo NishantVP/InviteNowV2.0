@@ -29,7 +29,7 @@
             android:parentActivityName=".SendInvitesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.coen268.invitenow.nishant.invitenowv10.SendInvitesActivity" />
+                android:value="com.coen268.invitenow.nishant.invitenowv20.SendInvitesActivity" />
         </activity>
         <activity
             android:name=".SelectFromGroupsActivity"
@@ -37,7 +37,7 @@
             android:parentActivityName=".SendInvitesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.coen268.invitenow.nishant.invitenowv10.SendInvitesActivity" />
+                android:value="com.coen268.invitenow.nishant.invitenowv20.SendInvitesActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -45,7 +45,7 @@
             android:parentActivityName=".SendInvitesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.coen268.invitenow.nishant.invitenowv10.SendInvitesActivity" />
+                android:value="com.coen268.invitenow.nishant.invitenowv20.SendInvitesActivity" />
         </activity>
         <activity
             android:name=".ProfileActivity"
@@ -53,7 +53,7 @@
             android:parentActivityName=".SettingsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.coen268.invitenow.nishant.invitenowv10.SettingsActivity" />
+                android:value="com.coen268.invitenow.nishant.invitenowv20.SettingsActivity" />
         </activity>
         <activity
             android:name=".EditProfileActivity"

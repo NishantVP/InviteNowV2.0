@@ -1,4 +1,4 @@
-package com.coen268.invitenow.nishant.invitenowv10;
+package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

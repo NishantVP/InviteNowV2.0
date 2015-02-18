@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.coen268.invitenow.nishant.invitenowv10"
+        applicationId "com.coen268.invitenow.nishant.invitenowv20"
         minSdkVersion 11
         targetSdkVersion 21
         versionCode 1
