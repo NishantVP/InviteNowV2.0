@@ -13,7 +13,7 @@ public class GroupsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
     }
-
+// THIS IS MY COMMIT
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
