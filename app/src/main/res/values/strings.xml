@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Invite Now V2.0</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="startImage">startImage</string>
+    <string name="tapToContinueString">Tap to Continue</string>
+    <string name="title_activity_send_invites">SendInvitesActivity</string>
+    <string name="inviteNowStartScreenTitleString">Invite Now ! </string>
+    <string name="meetSubjectHintString">Lets meet for... </string>
+    <string name="inTextViewString"> In </string>
+    <string name="time5MinString"> 5 min </string>
+    <string name="time15MinString"> 15 min </string>
+    <string name="time30MinString"> 30 min </string>
+    <string name="time60MinString"> 60 min </string>
+    <string name="timeOtherString"> at </string>
+    <string name="otherTimeTextViewHintString">_ _ : _ _</string>
+    <string name="sendInviteButtonDisplayTextString"> Invite</string>
+    <string name="selectContactsButtonDisplayString"> Contacts </string>
+    <string name="selectGroupssButtonDisplayString">Groups </string>
+    <string name="autoInvitesCheckBoxTextString"> Auto Invites</string>
+    <string name="usersNameTextViewString">Nishant Phatangare</string>
+    <string name="usersPhotoDescriptionString">Users Photo</string>
+    <string name="usersAvailabilityStatusColorString">Users Availability Status Color Image</string>
+    <string name="usersStatusTextViewString">Available</string>
+    <string name="title_activity_select_from_contacts">SelectFromContactsActivity</string>
+    <string name="contactphoto">contactphoto</string>
+    <string name="title_activity_select_from_groups">SelectFromGroupsActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="SettingsIcon">Settings Icon</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="editIcon">editIcon</string>
+    <string name="profilephoto">profilephotoBig</string>
+    <string name="availableRadioButtonText">Available </string>
+    <string name="busyRadioButtonText">Busy </string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
+    <string name="doneText">Done</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+    <string name="title_activity_location_preference">LocationPreferenceActivity</string>
+    <string name="title_activity_groups">GroupsActivity</string>
+    <string name="title_activity_preferences">PreferencesActivity</string>
+
+</resources>

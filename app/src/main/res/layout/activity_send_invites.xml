@@ -1,0 +1,220 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.coen268.invitenow.nishant.invitenowv10.SendInvitesActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileInfoRelativeLayout"
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:id="@+id/usersPhotoImageView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@string/usersPhotoDescriptionString"
+                android:onClick="enterProfile"/>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="10dp"
+                android:id="@+id/usersAvailabilityStatusColor"
+                android:layout_below="@id/usersPhotoImageView"
+                android:contentDescription="@string/usersAvailabilityStatusColorString"
+                android:onClick="enterProfile"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/usersNameTextViewString"
+                android:id="@+id/usersNameTextView"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/usersPhotoImageView"
+                android:onClick="enterProfile"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usersStatusTextViewString"
+                android:id="@+id/usersStatusTextView"
+                android:layout_below="@+id/usersNameTextView"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/usersPhotoImageView"
+                android:layout_toEndOf="@+id/usersPhotoImageView"
+                android:onClick="enterProfile"/>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/settingsImageView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/settings"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:contentDescription="@string/SettingsIcon"
+                android:onClick="enterSettings"/>
+
+
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/meetSubjectRelativeLayout"
+        android:layout_below="@id/profileInfoRelativeLayout"
+        >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/meetSubject"
+                android:hint="@string/meetSubjectHintString"
+                android:layout_below="@id/profileInfoRelativeLayout"
+                android:layout_marginTop="80dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/inTextViewString"
+                android:id="@+id/inTextView"
+                android:layout_below="@id/meetSubject"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="350dp"
+            android:layout_height="100dp"
+            android:id="@+id/timeSelectionRadioButtonRelativeLayout"
+            android:layout_below="@id/meetSubjectRelativeLayout"
+            android:layout_centerHorizontal="true"
+
+            >
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time5MinString"
+                android:id="@+id/time5MinRadioButton"
+                android:layout_marginStart="10dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="false" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time15MinString"
+                android:id="@+id/time15MinRadioButton"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/time5MinRadioButton" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time30MinString"
+                android:id="@+id/time30MinRadioButton"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/time15MinRadioButton" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time60MinString"
+                android:id="@+id/time60MinRadioButton"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/time30MinRadioButton" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/timeOtherString"
+                android:id="@+id/timeOtherRadioButton"
+
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentStart="false"
+                android:layout_centerInParent="true" />
+
+            <TextView android:id="@+id/timeDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/otherTimeTextViewHintString"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@id/timeOtherRadioButton"
+                android:layout_marginStart="10dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="350dp"
+            android:layout_height="200dp"
+            android:id="@+id/sendInvitesButtonsRelativeLayout"
+            android:layout_below="@id/timeSelectionRadioButtonRelativeLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            >
+
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="70dp"
+                android:text="@string/sendInviteButtonDisplayTextString"
+                android:id="@+id/inviteButton"
+                android:layout_below="@+id/timeSelectionRadioButtonRelativeLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:textSize="@dimen/abc_text_size_subhead_material" />
+
+            <Button
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:text="@string/selectContactsButtonDisplayString"
+                android:id="@+id/selectContactsButton"
+                android:layout_below="@+id/autoInviteCheckBox"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp"
+                android:onClick="enterSelectContacts"
+                />
+
+            <Button
+                android:layout_width="120dp"
+                android:layout_height="70dp"
+                android:text="@string/selectGroupssButtonDisplayString"
+                android:id="@+id/selectGroupsButton"
+                android:layout_below="@+id/autoInviteCheckBox"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:onClick="enterSelectGroups"
+                />
+
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/autoInvitesCheckBoxTextString"
+                android:id="@+id/autoInviteCheckBox"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/inviteButton"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
