@@ -2,17 +2,25 @@ package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.parse.Parse;
+import com.parse.ParseObject;
 
 import java.util.Calendar;
 
@@ -21,12 +29,22 @@ public class SendInvitesActivity extends ActionBarActivity {
 
     private TextView displayTime;
     private Button pickTime;
+    private EditText topic;
+    private Button inviteButton;
+    private TextView status;
 
     private int pHour;
     private int pMinute;
 
+    private String topic1;
+
+    private Double parseTest;
+
     static final int TIME_DIALOG_ID = 0;
 
+    private LocationManager locationManager;
+    private String provider;
+    private Location location;
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -65,14 +83,38 @@ public class SendInvitesActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_invites);
-
+/*
+        Parse.enableLocalDatastore(getApplicationContext());
+        Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
+                "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
+*/
         /* Set User's Photo in Profile bar at top */
+
+        // Get the location manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        // Define the criteria how to select the locatioin provider -> use
+        // default
+        Criteria criteria = new Criteria();
+        provider = locationManager.getBestProvider(criteria, false);
+        location = locationManager.getLastKnownLocation(provider);
+
+        // Initialize the location fields
+        if (location != null) {
+            System.out.println("Provider " + provider + " has been selected.");
+            onLocationChanged(location);
+        }
+        else {
+            System.out.println("Location not available");
+        }
+
+
         ImageView usersPhoto = (ImageView) findViewById(R.id.usersPhotoImageView);
         usersPhoto.setImageResource(R.drawable.panda);
 
         ImageView usersAvailabilityColor = (ImageView) findViewById(R.id.usersAvailabilityStatusColor);
         usersAvailabilityColor.setImageResource(R.drawable.green);
 
+        status = (TextView)findViewById(R.id.usersStatusTextView);
         /* Capture our View elements */
         displayTime = (TextView) findViewById(R.id.timeDisplay);
         pickTime = (Button) findViewById(R.id.timeOtherRadioButton);
@@ -88,6 +130,33 @@ public class SendInvitesActivity extends ActionBarActivity {
         final Calendar cal = Calendar.getInstance();
         pHour = cal.get(Calendar.HOUR_OF_DAY);
         pMinute = cal.get(Calendar.MINUTE);
+
+        /* Get text from edit text*/
+        topic = (EditText) findViewById(R.id.meetSubject);
+        topic1= topic.getText().toString();
+       // status.setText(topic1);
+        parseTest = 2.55;
+
+    }
+
+
+    public void onLocationChanged(Location location) {
+        int lat = (int) (location.getLatitude());
+        int lng = (int) (location.getLongitude());
+    }
+
+    public void inviteButtonClicked(View view)
+    {
+        // Enable Local Datastore.
+        status.setText(topic1);
+        Double lat = (double) (location.getLatitude());
+        Double lng = (double) (location.getLongitude());
+
+        ParseObject InviteTopic = new ParseObject("InviteTopic");
+        InviteTopic.put("Lat", lat);
+        InviteTopic.put("Lng", lng);
+
+        InviteTopic.saveInBackground();
 
     }
 

@@ -178,7 +178,8 @@
                 android:layout_below="@+id/timeSelectionRadioButtonRelativeLayout"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
-                android:textSize="@dimen/abc_text_size_subhead_material" />
+                android:textSize="@dimen/abc_text_size_subhead_material"
+                android:onClick="inviteButtonClicked"/>
 
             <Button
                 android:layout_width="120dp"

@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 
 public class startScreenActivity extends ActionBarActivity {
 
@@ -17,6 +20,17 @@ public class startScreenActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
+
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
+                "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
+        /*
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar1");
+        testObject.saveInBackground();
+        */
+
 
 /*      Set Start screen Image Here. Random image is set at this moment.
         ImageView startScreenImage = (ImageView) findViewById(R.id.startScreenImage);
