@@ -5,7 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="startImage">startImage</string>
-    <string name="tapToContinueString">Tap to Continue</string>
+    <string name="orSignUpScreen">Enter Username and Password and Click Sign Up </string>
+    <string name="firstTimeUser">First time user?</string>
     <string name="title_activity_send_invites">SendInvitesActivity</string>
     <string name="inviteNowStartScreenTitleString">Invite Now ! </string>
     <string name="meetSubjectHintString">Lets meet for... </string>

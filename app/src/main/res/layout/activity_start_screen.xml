@@ -9,24 +9,6 @@
     android:onClick="enterApplication"
     android:background="@android:color/background_dark">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/startScreenImage"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@string/startImage"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tapToContinueString"
-        android:id="@+id/tapToContinueTextView"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:textColor="#ffffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,5 +21,68 @@
         android:layout_marginTop="73dp"
         android:textColor="#aafff77e"
         android:textSize="50sp" />
+
+    <EditText
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/usernameEditText"
+    android:layout_below="@+id/inviteNowStartScreenTitle"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="48dp"
+    android:inputType="phone"
+    android:hint="enter your phone number"
+
+        />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/passwordEditText"
+        android:hint="password"
+        android:layout_below="@+id/usernameEditText"
+        android:layout_alignLeft="@+id/usernameEditText"
+        android:layout_alignStart="@+id/usernameEditText"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/loginButton"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"
+        android:onClick="doLogin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/firstTimeUser"
+        android:id="@+id/firstTimeUser"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/loginButton"
+        android:layout_marginTop="40dp"
+        android:textColor="#ffffffff" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/orSignUpScreen"
+        android:id="@+id/orSignUpScreen"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/firstTimeUser"
+        android:layout_marginTop="5dp"
+        android:textColor="#ffffffff" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:id="@+id/signUpButton"
+        android:layout_below="@+id/orSignUpScreen"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:onClick="doSignUp"/>
 
 </RelativeLayout>
