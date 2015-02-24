@@ -1,97 +1,171 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
-import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.security.acl.Group;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SelectFromContactsActivity extends ActionBarActivity {
 
-    private String[] contactNames;
-    private int[] contactImages;
-    private ListView contactList;
-    private contactsListAdapter contactListAdapter;
+    List<String> name = new ArrayList<String>();
+    List<String> phno = new ArrayList<String>();
+    MyAdapter myAdapter;
+    Button select;
 
-/*
-    public void initializeList()
-    {
-        contactImages = new int[] {R.drawable.carl,R.drawable.einstein,R.drawable.newton,
-                R.drawable.tesla};
-        contactNames = new String[] {" Carl Sagan"," Albert Einstein", " Isaac Newton"," Nikola Tesla"};
-        contactList = (ListView) findViewById(R.id.lst_contacts);
-        contactListAdapter = new contactsListAdapter(this, contactNames, contactImages);
-        contactList.setAdapter(contactListAdapter);
-    }
-*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_from_contacts);
 
+        getAllContacts(this.getContentResolver());
+        ListView list = (ListView)findViewById(R.id.list);
+        myAdapter = new MyAdapter();
+        list.setAdapter(myAdapter);
+        //       list.setOnItemClickListener(this);
+        list.setItemsCanFocus(false);
+        list.setTextFilterEnabled(true);
 
-        contactImages = new int[] {R.drawable.carl,R.drawable.einstein,R.drawable.newton,
-                R.drawable.tesla};
-        contactNames = new String[] {" Carl Sagan"," Albert Einstein", " Isaac Newton"," Nikola Tesla"};
-        contactList = (ListView) findViewById(R.id.listView2);
-        contactListAdapter = new contactsListAdapter(this, contactNames, contactImages);
+        select = (Button)findViewById(R.id.button1);
 
-        contactList.setAdapter(contactListAdapter);
-
-
-        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        select.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        // On Click CheckBox will be checked
-                        //contactCheckox.toggle();
-                        break;
+            public void onClick(View v) {
+                StringBuilder checkedcontacts = new StringBuilder();
+                for(int i =0 ; i < name.size();i++){
 
-                    case 1:
-                        // On Click CheckBox will be checked
-                        //contactCheckox.toggle();
-                        break;
-                    case 2:
-                        // On Click CheckBox will be checked break;
-                        //contactCheckox.toggle();
-                    case 3:
-                        // On Click CheckBox will be checked
-                        //contactCheckox.toggle();
-                        break;
+                    if(myAdapter.myCheckStates.get(i)== true) {
+                        checkedcontacts.append(name.get(i).toString());
+                        checkedcontacts.append("\n");
+                    }
+                    else{
+                        System.out.println("Not Checked......"+name.get(i).toString());
+                    }
                 }
+                Toast.makeText(SelectFromContactsActivity.this,checkedcontacts,Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    //    @Override
+    public void onItemClick(AdapterView<?> arg0,View arg1, int arg2, long arg3){
+        myAdapter.toggle(arg2);
+    }
+
+
+    private void getAllContacts(ContentResolver contentResolver) {
+
+
+        Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        while(cursor.moveToNext()){
+            String name1 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String phn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            Toast.makeText(SelectFromContactsActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
+            if(!name.contains(name1)){
+
+                name.add(name1);
+                phno.add(phn);
+            }
+
+        }
+        cursor.close();
+    }
+
+    class MyAdapter extends BaseAdapter implements CompoundButton.OnCheckedChangeListener {
+        private SparseBooleanArray myCheckStates;
+        LayoutInflater mInflater;
+        TextView tv1,tv;
+        CheckBox cb;
+        MyAdapter()
+        {
+            myCheckStates = new SparseBooleanArray(name.size());
+            mInflater = (LayoutInflater)SelectFromContactsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return name.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            // TODO Auto-generated method stub
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // TODO Auto-generated method stub
+
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            View vi=convertView;
+            if(convertView==null)
+                vi = mInflater.inflate(R.layout.row, null);
+            TextView tv= (TextView) vi.findViewById(R.id.textView1);
+            tv1= (TextView) vi.findViewById(R.id.textView2);
+            cb = (CheckBox) vi.findViewById(R.id.checkBox1);
+            tv.setText(""+ name.get(position));
+            tv1.setText(""+ phno.get(position));
+            cb.setTag(position);
+            cb.setChecked(myCheckStates.get(position, false));
+            cb.setOnCheckedChangeListener(this);
+
+            return vi;
+        }
+        public boolean isChecked(int position) {
+            return myCheckStates.get(position, false);
+        }
+
+        public void setChecked(int position, boolean isChecked) {
+            myCheckStates.put(position, isChecked);
+            System.out.println("hello...........");
+            notifyDataSetChanged();
+        }
+
+        public void toggle(int position) {
+            setChecked(position, !isChecked(position));
+        }
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView,
+                                     boolean isChecked) {
+            // TODO Auto-generated method stub
+
+            myCheckStates.put((Integer) buttonView.getTag(), isChecked);
+        }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_select_from_groups, menu);
+        getMenuInflater().inflate(R.menu.menu_select_from_contacts, menu);
         return true;
     }
 
@@ -104,16 +178,11 @@ public class SelectFromContactsActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            Intent intent = new Intent(SelectFromContactsActivity.this, SelectFromGroupsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void enterSendInvite(View view)
-    {
-        Intent enterSendInvites = new Intent(this, SendInvitesActivity.class);
-        startActivity(enterSendInvites);
-    }
-
 }

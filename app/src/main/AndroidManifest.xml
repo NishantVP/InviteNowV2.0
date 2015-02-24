@@ -84,6 +84,10 @@
             android:name=".PreferencesActivity"
             android:label="@string/title_activity_preferences" >
         </activity>
+        <activity
+            android:name=".SettingsDrawer"
+            android:label="@string/title_activity_settings_drawer" >
+        </activity>
     </application>
 
 </manifest>
