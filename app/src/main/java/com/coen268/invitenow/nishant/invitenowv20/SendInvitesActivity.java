@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -52,6 +54,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     GoogleApiClient mGoogleApiClient;
     Double lat,lng;
 
+    String usernamePhone;
+
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -92,6 +96,15 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 .build();
     }
 
+    private void readFromDB() {
+        SQLiteDatabase db = new userDB(this).getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("Select * from  User", null);
+        int number = cursor.getCount();
+        cursor.moveToLast();
+        usernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +167,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
        // status.setText(topic1);
         parseTest = 2.55;
 
+        readFromDB();
     }
 
 
@@ -165,12 +179,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     public void inviteButtonClicked(View view)
     {
         // Enable Local Datastore.
-        status.setText(topic1);
+        status.setText(usernamePhone);
 
         ParseObject InviteTopic = new ParseObject("InviteTopic");
         InviteTopic.put("Lat", lat);
         InviteTopic.put("Lng", lng);
-
+        InviteTopic.put("UserID", usernamePhone);
         InviteTopic.saveInBackground();
 
     }
