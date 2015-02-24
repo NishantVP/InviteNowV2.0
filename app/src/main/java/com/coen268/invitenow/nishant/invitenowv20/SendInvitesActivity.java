@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +25,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseException;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
 import java.util.Calendar;
 
 
@@ -43,7 +49,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     private int pMinute;
 
     private String topic1;
-
+    String objectId;
     private Double parseTest;
 
     static final int TIME_DIALOG_ID = 0;
@@ -103,8 +109,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         int number = cursor.getCount();
         cursor.moveToLast();
         usernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
-
+       // objectId = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,8 +176,31 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         parseTest = 2.55;
 
         readFromDB();
+        getFromParse();
+        Log.d("objID :" , objectId);
+        status.setText(objectId);
+        //writeUserIDtoParse();
     }
 
+    public void getFromParse()
+    {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        query.whereEqualTo("UserID", "4085655184");
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) {
+                    Log.d("score 1", "The getFirst request failed.");
+                }
+                else {
+                    Log.d("score 1", "Retrieved the object.");
+                    objectId = "Nishan";
+                    //Firstname = object.getString("FirstName");
+                    //Lastname = object.getString("LastName");
+                    //EmailID = object.getString("Email");
+                }
+            }
+        });
+    }
 
     public void onLocationChanged(Location location) {
         int lat = (int) (location.getLatitude());
@@ -179,13 +210,21 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     public void inviteButtonClicked(View view)
     {
         // Enable Local Datastore.
-        status.setText(usernamePhone);
-
-        ParseObject InviteTopic = new ParseObject("InviteTopic");
+        final ParseObject InviteTopic = new ParseObject("InviteTopic");
         InviteTopic.put("Lat", lat);
         InviteTopic.put("Lng", lng);
         InviteTopic.put("UserID", usernamePhone);
-        InviteTopic.saveInBackground();
+        InviteTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                // Now you can do whatever you want with the object ID, like save it in a variable
+               // objectId = InviteTopic.getObjectId();
+            }
+        });
+
+       // InviteTopic.saveInBackground();
+        //status.setText(objectId);
+
 
     }
 
