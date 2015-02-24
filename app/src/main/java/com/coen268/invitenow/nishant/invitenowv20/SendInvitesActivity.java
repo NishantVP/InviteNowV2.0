@@ -19,13 +19,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.parse.Parse;
 import com.parse.ParseObject;
-
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import java.util.Calendar;
 
 
-public class SendInvitesActivity extends ActionBarActivity {
+public class SendInvitesActivity extends ActionBarActivity  implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private TextView displayTime;
     private Button pickTime;
@@ -44,7 +48,9 @@ public class SendInvitesActivity extends ActionBarActivity {
 
     private LocationManager locationManager;
     private String provider;
-    private Location location;
+    private Location mLastLocation;
+    GoogleApiClient mGoogleApiClient;
+    Double lat,lng;
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -78,6 +84,14 @@ public class SendInvitesActivity extends ActionBarActivity {
             return "0" + String.valueOf(c);
     }
 
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,22 +105,25 @@ public class SendInvitesActivity extends ActionBarActivity {
         /* Set User's Photo in Profile bar at top */
 
         // Get the location manager
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
+
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // Define the criteria how to select the locatioin provider -> use
         // default
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        location = locationManager.getLastKnownLocation(provider);
+        //Criteria criteria = new Criteria();
+        //provider = locationManager.getBestProvider(criteria, false);
+        //location = locationManager.getLastKnownLocation(provider);
 
         // Initialize the location fields
-        if (location != null) {
+        /*if (location != null) {
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         }
         else {
             System.out.println("Location not available");
         }
-
+        */
 
         ImageView usersPhoto = (ImageView) findViewById(R.id.usersPhotoImageView);
         usersPhoto.setImageResource(R.drawable.panda);
@@ -149,8 +166,6 @@ public class SendInvitesActivity extends ActionBarActivity {
     {
         // Enable Local Datastore.
         status.setText(topic1);
-        Double lat = (double) (location.getLatitude());
-        Double lng = (double) (location.getLongitude());
 
         ParseObject InviteTopic = new ParseObject("InviteTopic");
         InviteTopic.put("Lat", lat);
@@ -217,4 +232,26 @@ public class SendInvitesActivity extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            Toast.makeText(this, "location taken", Toast.LENGTH_SHORT).show();
+            lat = (double) (mLastLocation.getLatitude());
+            lng = (double) (mLastLocation.getLongitude());
+
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }
