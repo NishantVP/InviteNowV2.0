@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -150,6 +151,24 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_invites);
+
+
+        final String getintent = getIntent().getStringExtra("abc");
+
+
+
+        Button smsButton = (Button)findViewById(R.id.sms);
+
+
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] lines = getintent.toString().split("\n");
+                   sendSMS(lines);
+            }
+        });
+        
+        
 /*
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
@@ -218,6 +237,20 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         usernameTextView.setText(FirstName +" " + LastName);
         writeLocationToParse();
         getNearbyLocationFromParse();
+    }
+
+    private void sendSMS(String[] lines) {
+
+        String message = "This is group SMS";
+
+        for(int i = 0 ;i< lines.length -1 ;i++){
+
+
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(lines[i],null,message,null,null);
+            Toast.makeText(SendInvitesActivity.this,"message sent to: "+lines[i],Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     public void saveFriendToSQLite(String fusername, String friendLat ,String friendLng,

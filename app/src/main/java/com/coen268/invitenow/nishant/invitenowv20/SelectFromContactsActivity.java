@@ -83,7 +83,7 @@ public class SelectFromContactsActivity extends ActionBarActivity {
                 Toast.makeText(SelectFromContactsActivity.this, dfq, Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(SelectFromContactsActivity.this,SendInvitesActivity.class);
-                intent.putExtra("abc", dfq);
+                intent.putExtra("abc", checkedcontacts.toString());
                 startActivity(intent);
 
             }
@@ -105,7 +105,7 @@ public class SelectFromContactsActivity extends ActionBarActivity {
             String name1 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             Toast.makeText(SelectFromContactsActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
-            if(!name.contains(name1)){
+            if(!phno.contains(phn)){
 
                 name.add(name1);
                 phno.add(phn);
