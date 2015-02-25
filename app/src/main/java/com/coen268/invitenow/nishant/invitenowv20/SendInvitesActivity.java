@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 import java.util.Calendar;
-import java.util.List;
 
 
 public class SendInvitesActivity extends ActionBarActivity {
@@ -47,9 +45,6 @@ public class SendInvitesActivity extends ActionBarActivity {
     private LocationManager locationManager;
     private String provider;
     private Location location;
-
-Button smsButton;
-
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -88,22 +83,6 @@ Button smsButton;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_invites);
-
-        String getintent = getIntent().getStringExtra("abc");
-
-     final String[] lines = getintent.toString().split("\n");
-
-        Button smsButton = (Button)findViewById(R.id.sms);
-
-
-        smsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                sendSMS(lines);
-            }
-        });
-
 /*
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
@@ -237,18 +216,5 @@ Button smsButton;
         startActivity(enterProfile);
     }
 
-
-    public void sendSMS(String[] abc){
-
-        String message = "This is group SMS";
-
-        for(int i = 0 ;i< abc.length -1 ;i++){
-
-
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(abc[i],null,message,null,null);
-
-        }
-    }
 
 }
