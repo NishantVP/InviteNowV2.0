@@ -1,23 +1,65 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 
 public class EditProfileActivity extends ActionBarActivity {
+
+    private static final int RESULT_GALLERY =1;
+    private static final int CAMERA_PIC_REQUEST =1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+
+        final CharSequence myList[] = {"Gallery","Camera capture"};
+        RelativeLayout rl;
+        rl = (RelativeLayout)findViewById(R.id.myRL);
+
         ImageView uploadPhoto = (ImageView) findViewById(R.id.profilePhotoBigEdit);
         uploadPhoto.setImageResource(R.drawable.uploadpic);
+
+        final AlertDialog.Builder cusDialog = new AlertDialog.Builder(this);
+        cusDialog.setTitle("Choose from options belows");
+        cusDialog.setSingleChoiceItems(myList,-1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+
+                if(arg1 == 1){
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, CAMERA_PIC_REQUEST);
+                }
+                else if(arg1 == 0){
+                    Intent galleryIntent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent , RESULT_GALLERY );
+                }
+            }
+        });
+
+
+        uploadPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cusDialog.show();
+            }
+        });
+
     }
 
     public void enterSendInvites(View view) {
@@ -45,5 +87,17 @@ public class EditProfileActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PIC_REQUEST) {
+            if (resultCode == RESULT_OK) {
+             /*   tv.setText("Got picture!");
+                imageData = (Bitmap) data.getExtras().get("data");
+                ImageView image = (ImageView) findViewById(R.id.imageView1);
+                image.setImageBitmap(imageData);
+            } else if (resultCode == RESULT_CANCELED){
+                tv.setText("Cancelled");*/
+            }
+        }
     }
 }
