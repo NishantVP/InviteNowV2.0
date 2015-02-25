@@ -31,6 +31,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
     EditText editText;
     Cursor cursor;
     Context context;
+    Long group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +167,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
                         String contactID = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
 
                         long contact = Long.parseLong(contactID);
-                        long group = Long.parseLong(groupID);
+                        group = Long.parseLong(groupID);
 
                         addToGroup(contact,group);
 
