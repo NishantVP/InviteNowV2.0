@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 
 public class SelectFromContactsActivity extends ActionBarActivity {
@@ -53,17 +54,38 @@ public class SelectFromContactsActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 StringBuilder checkedcontacts = new StringBuilder();
-                for(int i =0 ; i < name.size();i++){
+     /*           for (int i = 0; i < name.size(); i++) {
 
-                    if(myAdapter.myCheckStates.get(i)== true) {
+                    if (myAdapter.myCheckStates.get(i) == true) {
                         checkedcontacts.append(name.get(i).toString());
                         checkedcontacts.append("\n");
+                    } else {
+                        System.out.println("Not Checked......" + name.get(i).toString());
                     }
-                    else{
-                        System.out.println("Not Checked......"+name.get(i).toString());
+                } */
+
+
+                for(int i = 0; i < phno.size(); i++)
+                {
+                    if (myAdapter.myCheckStates.get(i) == true) {
+                        checkedcontacts.append(phno.get(i).toString());
+                        checkedcontacts.append("\n");
+                    } else {
+                        System.out.println("Not Checked......" + phno.get(i).toString());
+
                     }
                 }
-                Toast.makeText(SelectFromContactsActivity.this,checkedcontacts,Toast.LENGTH_SHORT).show();
+
+            //    Toast.makeText(SelectFromContactsActivity.this, checkedcontacts, Toast.LENGTH_SHORT).show();
+
+                String dfq = checkedcontacts.toString();
+
+                Toast.makeText(SelectFromContactsActivity.this, dfq, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(SelectFromContactsActivity.this,SendInvitesActivity.class);
+                intent.putExtra("abc", checkedcontacts.toString());
+                startActivity(intent);
+
             }
         });
 
@@ -83,7 +105,7 @@ public class SelectFromContactsActivity extends ActionBarActivity {
             String name1 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             Toast.makeText(SelectFromContactsActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
-            if(!name.contains(name1)){
+            if(!phno.contains(phn)){
 
                 name.add(name1);
                 phno.add(phn);
