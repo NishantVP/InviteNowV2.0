@@ -348,7 +348,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> FriendList, ParseException e) {
                 if (e == null) {
-                    Log.d("score", "Retrieved " + FriendList.size() + " Friends");
+                    Log.d("Friends", "Retrieved " + FriendList.size() + " Friends");
 
                     for(int i=0;i<FriendList.size();i++) {
                         friendLat = FriendList.get(i).getDouble("Lat");
