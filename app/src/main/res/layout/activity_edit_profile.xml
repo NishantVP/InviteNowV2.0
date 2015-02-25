@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:textSize="20sp"
-        android:onClick="enterSendInvites"/>
+        android:onClick="saveProfileChanges"/>
 
 
     <ImageView
@@ -22,21 +22,46 @@
         android:layout_height="250dp"
         android:id="@+id/profilePhotoBigEdit"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/profilephoto"
         android:src="@drawable/uploadpic"/>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:hint="@string/usersNameTextViewString"
-        android:id="@+id/editView"
+        android:hint="@string/FirstNameTextViewString"
+        android:id="@+id/FirstName"
         android:layout_below="@+id/profilePhotoBigEdit"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:hint="@string/LastNameTextViewString"
+        android:id="@+id/LastName"
+        android:layout_below="@+id/FirstName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:hint="@string/EmailTextViewString"
+        android:id="@+id/EmailID"
+        android:layout_below="@+id/LastName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:inputType="textEmailAddress" />
 
 </RelativeLayout>
