@@ -19,6 +19,7 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.ParseQuery;
@@ -42,6 +43,8 @@ public class startScreenActivity extends ActionBarActivity {
     String Firstname = "UNKNOWN";
     String Lastname = "UNKNOWN";
     String EmailID = "UNKNOWN";
+    String firstItemId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,12 @@ public class startScreenActivity extends ActionBarActivity {
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
                 "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
+        //ParseACL defaultACL = new ParseACL();
+        // Optionally enable public read access by default.
+        // defaultACL.setPublicReadAccess(true);
+        //ParseACL.setDefaultACL(defaultACL, true);
+        //ParseUser.enableAutomaticUser();
+
         /*
         ParseObject testObject = new ParseObject("TestObject");
         testObject.put("foo", "bar1");
@@ -135,8 +144,7 @@ public class startScreenActivity extends ActionBarActivity {
         return count > 0;
     }
 
-    public void doLogin(View view)
-    {
+    public void doLogin(View view) {
         usernameString = username.getText().toString();
         passwordString = password.getText().toString();
 
@@ -145,15 +153,14 @@ public class startScreenActivity extends ActionBarActivity {
                 if (user != null) {
                     // Hooray! The user is logged in.
 
-
+                    /*
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
                     query.whereEqualTo("UserID", "4085655184");
                     query.getFirstInBackground(new GetCallback<ParseObject>() {
                         public void done(ParseObject object, ParseException e) {
                             if (object == null) {
                                 Log.d("score", "The getFirst request failed.");
-                            }
-                            else {
+                            } else {
                                 Log.d("score", "Retrieved the object.");
                                 ParseUserDataObjID = object.getString("objectId");
                                 Firstname = object.getString("FirstName");
@@ -162,11 +169,13 @@ public class startScreenActivity extends ActionBarActivity {
                             }
                         }
                     });
-
-                    saveUserToSQLite(usernameString,passwordString);
+                    */
+                    getFromParse();
+                    //saveUserToSQLite(usernameString, passwordString);
 
                     Toast.makeText(getApplicationContext(), Firstname,
                             Toast.LENGTH_SHORT).show();
+
                     Intent enterSendInvites2 = new Intent(startScreenActivity.this, SendInvitesActivity.class);
                     startActivity(enterSendInvites2);
 
@@ -174,6 +183,26 @@ public class startScreenActivity extends ActionBarActivity {
                     // Signup failed. Look at the ParseException to see what happened.
                     Toast.makeText(getApplicationContext(), "Username or Password incorrect",
                             Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void getFromParse()
+    {
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        query.whereEqualTo("UserID", usernameString);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> scoreList, ParseException e) {
+                if (e == null) {
+                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
+                    firstItemId = scoreList.get(0).getObjectId();
+                    //objectId=firstItemId;
+                    //status.setText(firstItemId);
+                    saveUserToSQLiteOnLogin(usernameString, passwordString, firstItemId);
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
                 }
             }
         });
@@ -205,9 +234,10 @@ public class startScreenActivity extends ActionBarActivity {
                                 Toast.LENGTH_SHORT).show();
 
                         saveUserToSQLite(usernameString,passwordString);
+
                         writeUserIDtoParse();
-                        Intent enterSendInvites = new Intent(startScreenActivity.this, SendInvitesActivity.class);
-                        startActivity(enterSendInvites);
+                        Intent enterEditProfile = new Intent(startScreenActivity.this, EditProfileActivity.class);
+                        startActivity(enterEditProfile);
 
 
                     } else {
@@ -215,6 +245,8 @@ public class startScreenActivity extends ActionBarActivity {
                         // to figure out what went wrong
                         Toast.makeText(getApplicationContext(), "Something went wrong",
                                 Toast.LENGTH_SHORT).show();
+                        String e1= e.toString();
+                        Log.d("Parse Exception",e1);
 
 
                     }
@@ -246,6 +278,26 @@ public class startScreenActivity extends ActionBarActivity {
         db.insert(userDB.DATABASE_TABLE, null, newValues);
         Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
     }
+
+    public void saveUserToSQLiteOnLogin(String usernameDB, String passwordDB, String ObjID) {
+        SQLiteDatabase db = new userDB(this).getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put(userDB.COLUMN_USERNAME, usernameDB);
+        newValues.put(userDB.COLUMN_PASSWORD, passwordDB);
+        newValues.put(userDB.COLUMN_PARSE_OBJECT_ID, ObjID);
+        newValues.put(userDB.COLUMN_FIRSTNAME, Firstname);
+        newValues.put(userDB.COLUMN_LASTNAME, Lastname);
+        newValues.put(userDB.COLUMN_EMAIL, EmailID);
+
+        //-----For Debug-----//
+        // newValues.put(NotesDB.NAME_COLUMN, path);
+        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
+        //-----For Debug-----//
+
+        db.insert(userDB.DATABASE_TABLE, null, newValues);
+        Toast.makeText(getApplicationContext(), "Saved in DataBase Obj" +ObjID , Toast.LENGTH_SHORT).show();
+    }
+
 
     private void readFromDB() {
         SQLiteDatabase db = new userDB(this).getWritableDatabase();

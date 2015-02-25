@@ -24,7 +24,7 @@ public class EditProfileActivity extends ActionBarActivity {
     private EditText firstNameEditText,lastNameEditText, emailEditText;
     private String firstName,lastName, email;
     String usernamePhone;
-    String ParseObjID;
+    String ParseObjID, usernameDB,passwordDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +48,12 @@ public class EditProfileActivity extends ActionBarActivity {
         email = emailEditText.getText().toString();
 
 
-        if(firstName != null && lastName !=null && email !=null){
+        if(firstName == null || lastName ==null || email ==null){
 
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-            // Retrieve the object by id
-            query.getInBackground(ParseObjID, new GetCallback<ParseObject>() {
-                public void done(ParseObject UserData, ParseException e) {
-                    if (e == null) {
-                        // Now let's update it with some new data. In this case, only cheatMode and score
-                        // will get sent to the Parse Cloud. playerName hasn't changed.
-                        UserData.put("FirstName", firstName);
-                        UserData.put("LastName", lastName);
-                        UserData.put("Email", email);
-                    }
-                }
-            });
+
+            Toast.makeText(getApplicationContext(), "Enter Information in Text",
+                    Toast.LENGTH_SHORT).show();
+
 
             /*
             ParseObject InviteTopic = new ParseObject("UserDetails");
@@ -73,14 +64,33 @@ public class EditProfileActivity extends ActionBarActivity {
             InviteTopic.saveInBackground();
 
             saveUserInfoToSQLite();
+            */
+
+        }
+        else{
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+            // Retrieve the object by id
+            query.getInBackground(ParseObjID, new GetCallback<ParseObject>() {
+                public void done(ParseObject UserData, ParseException e) {
+                    if (e == null) {
+                        // Now let's update it with some new data. In this case, only cheatMode and score
+                        // will get sent to the Parse Cloud. playerName hasn't changed.
+                        UserData.put("FirstName", firstName);
+                        UserData.put("LastName", lastName);
+                        UserData.put("Email", email);
+                        UserData.saveInBackground();
+                    }
+                }
+            });
+
+            saveUserInfoToSQLite();
 
             Intent enterSendInvites = new Intent(this, SendInvitesActivity.class);
             startActivity(enterSendInvites);
-            */
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "Enter Information in Text",
+
+            Toast.makeText(getApplicationContext(), ParseObjID,
                     Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -90,6 +100,10 @@ public class EditProfileActivity extends ActionBarActivity {
         newValues.put(userDB.COLUMN_FIRSTNAME, firstName);
         newValues.put(userDB.COLUMN_LASTNAME, lastName);
         newValues.put(userDB.COLUMN_EMAIL, email);
+        newValues.put(userDB.COLUMN_USERNAME, usernamePhone);
+        newValues.put(userDB.COLUMN_PASSWORD, passwordDB);
+        newValues.put(userDB.COLUMN_PARSE_OBJECT_ID, ParseObjID);
+
 
         //-----For Debug-----//
         // newValues.put(NotesDB.NAME_COLUMN, path);
@@ -107,6 +121,7 @@ public class EditProfileActivity extends ActionBarActivity {
         int number = cursor.getCount();
         cursor.moveToLast();
         usernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
+        passwordDB = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PASSWORD));
         ParseObjID = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
 
     }

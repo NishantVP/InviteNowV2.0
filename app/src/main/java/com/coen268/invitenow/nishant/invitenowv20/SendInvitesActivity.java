@@ -25,21 +25,25 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseException;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.Calendar;
+import java.util.List;
 
 
 public class SendInvitesActivity extends ActionBarActivity  implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     private TextView displayTime;
+    private  TextView usernameTextView;
     private Button pickTime;
     private EditText topic;
     private Button inviteButton;
@@ -49,7 +53,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     private int pMinute;
 
     private String topic1;
-    String objectId;
+    private String objectId;
     private Double parseTest;
 
     static final int TIME_DIALOG_ID = 0;
@@ -61,6 +65,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     Double lat,lng;
 
     String usernamePhone;
+    String FirstName;
+    String LastName;
+    String firstItemId;
+
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -109,7 +117,9 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         int number = cursor.getCount();
         cursor.moveToLast();
         usernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
-       // objectId = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
+        objectId = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
+        FirstName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_FIRSTNAME));
+        LastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
     }
 
 
@@ -176,30 +186,64 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         parseTest = 2.55;
 
         readFromDB();
-        getFromParse();
-        Log.d("objID :" , objectId);
+        //objectId="hardset";
+        //getFromParse();
+
+        //Log.d("objID :" , objectId);
         status.setText(objectId);
         //writeUserIDtoParse();
+        usernameTextView = (TextView)findViewById(R.id.usersNameTextView);
+        usernameTextView.setText(FirstName +" " + LastName);
     }
 
     public void getFromParse()
     {
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        query.whereEqualTo("UserID", "4085655184");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> scoreList, ParseException e) {
+                if (e == null) {
+                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
+                    firstItemId = scoreList.get(0).getObjectId();
+                    //objectId=firstItemId;
+                    //status.setText(firstItemId);
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        /*
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
         query.whereEqualTo("UserID", "4085655184");
         query.getFirstInBackground(new GetCallback<ParseObject>() {
+        /*    public void done(ParseObject oResult, ParseException e) {
+                if (e==null) {
+                    // Object is Successfully Retrieved
+                    objectId = oResult.getString("FirstName");
+                } else {
+                    // Problem with Retrieve
+                    e.printStackTrace();
+                }
+            }
+        });*/
+        /*
             public void done(ParseObject object, ParseException e) {
                 if (object == null) {
                     Log.d("score 1", "The getFirst request failed.");
                 }
                 else {
-                    Log.d("score 1", "Retrieved the object.");
                     objectId = "Nishan";
+                    Log.d("score 1", "Retrieved the object.");
+
                     //Firstname = object.getString("FirstName");
                     //Lastname = object.getString("LastName");
                     //EmailID = object.getString("Email");
                 }
             }
         });
+        */
     }
 
     public void onLocationChanged(Location location) {
