@@ -194,6 +194,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //writeUserIDtoParse();
         usernameTextView = (TextView)findViewById(R.id.usersNameTextView);
         usernameTextView.setText(FirstName +" " + LastName);
+        writeLocationToParse();
     }
 
     public void getFromParse()
@@ -270,6 +271,48 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //status.setText(objectId);
 
 
+    }
+
+    public void writeLocationToParse()
+    {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        // Retrieve the object by id
+        query.getInBackground(objectId, new GetCallback<ParseObject>() {
+            public void done(ParseObject UserData, ParseException e) {
+                if (e == null) {
+                    // Now let's update it with some new data. In this case, only cheatMode and score
+                    // will get sent to the Parse Cloud. playerName hasn't changed.
+                    UserData.put("Lat", lat);
+                    UserData.put("Lng", lng);
+                    //UserData.put("LastName", lastName);
+                    //UserData.put("Email", email);
+                    UserData.saveInBackground();
+
+                }
+            }
+        });
+        Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getNearbyLocationFromParse()
+    {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        // Retrieve the object by id
+        query.getInBackground(objectId, new GetCallback<ParseObject>() {
+            public void done(ParseObject UserData, ParseException e) {
+                if (e == null) {
+                    // Now let's update it with some new data. In this case, only cheatMode and score
+                    // will get sent to the Parse Cloud. playerName hasn't changed.
+                    UserData.put("Lat", lat);
+                    UserData.put("Lng", lng);
+                    //UserData.put("LastName", lastName);
+                    //UserData.put("Email", email);
+                    UserData.saveInBackground();
+
+                }
+            }
+        });
+        Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
     }
 
     /* Create a new dialog for time picker */
