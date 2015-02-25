@@ -69,6 +69,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     String LastName;
     String firstItemId;
 
+    Double friendLat,friendLng;
+
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -199,7 +201,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     public void getFromParse()
     {
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
         query.whereEqualTo("UserID", "4085655184");
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -266,6 +267,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                // objectId = InviteTopic.getObjectId();
             }
         });
+        getNearbyLocationFromParse();
 
        // InviteTopic.saveInBackground();
         //status.setText(objectId);
@@ -296,6 +298,27 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     public void getNearbyLocationFromParse()
     {
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+        query.whereEqualTo("UserID", "6692378282");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> FriendList, ParseException e) {
+                if (e == null) {
+                    Log.d("score", "Retrieved " + FriendList.size() + " scores");
+                    friendLat = FriendList.get(0).getDouble("Lat");
+                    friendLng = FriendList.get(0).getDouble("Lng");
+                    //firstItemId = FriendList.get(0).getObjectId();
+                    //objectId=firstItemId;
+                    //status.setText(firstItemId);
+                    System.out.println("FLat " +friendLat);
+                    System.out.println("FLgn " +friendLng);
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        /*
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
         // Retrieve the object by id
         query.getInBackground(objectId, new GetCallback<ParseObject>() {
@@ -313,6 +336,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             }
         });
         Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
+        */
     }
 
     /* Create a new dialog for time picker */
