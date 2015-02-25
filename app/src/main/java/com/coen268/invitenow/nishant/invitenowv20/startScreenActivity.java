@@ -77,7 +77,7 @@ public class startScreenActivity extends ActionBarActivity {
         }*/
 
         readFromDB();
-
+        deleteall();
         ParseUser.logInInBackground(usernameCheck, passwordCheck, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
@@ -188,16 +188,30 @@ public class startScreenActivity extends ActionBarActivity {
         });
     }
 
+    public void deleteall(){
+        //SQLiteDatabase db = new userDB(this).getWritableDatabase();
+        SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
+        //String delete = "TRUNCATE FROM tweets";
+        //db.rawQuery(delete, null);
+        db.delete("Friends",null,null);
+        Toast.makeText(getApplicationContext(), "Database Table cleared Deleted",
+                Toast.LENGTH_SHORT).show();
+    }
+
     public void getFromParse()
     {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
         query.whereEqualTo("UserID", usernameString);
         query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> scoreList, ParseException e) {
+            public void done(List<ParseObject> dataList, ParseException e) {
                 if (e == null) {
-                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
-                    firstItemId = scoreList.get(0).getObjectId();
+                    Log.d("score", "Retrieved " + dataList.size() + " scores");
+                    firstItemId = dataList.get(0).getObjectId();
+                    Firstname = dataList.get(0).getString("FirstName");
+                    Lastname = dataList.get(0).getString("LastName");
+                    EmailID = dataList.get(0).getString("Email");
+
                     //objectId=firstItemId;
                     //status.setText(firstItemId);
                     saveUserToSQLiteOnLogin(usernameString, passwordString, firstItemId);

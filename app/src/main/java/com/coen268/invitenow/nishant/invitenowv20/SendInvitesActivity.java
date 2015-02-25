@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -35,7 +34,6 @@ import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallback
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
 import java.util.Calendar;
 import java.util.List;
 
@@ -238,7 +236,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //-----For Debug-----//
 
         db.insert(friendLocationDB.DATABASE_TABLE, null, newValues);
-        Toast.makeText(getApplicationContext(), "Friend Saved", Toast.LENGTH_SHORT).show();
+
     }
 
     public void getFromParse()
@@ -346,27 +344,42 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-        query.whereEqualTo("UserID", fusername);
+        query.whereNotEqualTo("UserID", "unknown");
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> FriendList, ParseException e) {
                 if (e == null) {
-                    Log.d("score", "Retrieved " + FriendList.size() + " scores");
-                    friendLat = FriendList.get(0).getDouble("Lat");
-                    friendLng = FriendList.get(0).getDouble("Lng");
-                    ffirstname = FriendList.get(0).getString("FirstName");
-                    flastname = FriendList.get(0).getString("LastName");
-                    femail = FriendList.get(0).getString("Email");
+                    Log.d("score", "Retrieved " + FriendList.size() + " Friends");
 
-                    String friendLat1= Double.toString(friendLat);
-                    String friendLng1= Double.toString(friendLng);
-                    //firstItemId = FriendList.get(0).getObjectId();
-                    //objectId=firstItemId;
-                    //status.setText(firstItemId);
-                    //System.out.println("FLat " +friendLat);
-                    //System.out.println("FLgn " +friendLng);
-                    saveFriendToSQLite(fusername, friendLat1 ,friendLng1,
-                            ffirstname, flastname, femail );
-                } else {
+                    for(int i=0;i<FriendList.size();i++) {
+                        friendLat = FriendList.get(i).getDouble("Lat");
+                        friendLng = FriendList.get(i).getDouble("Lng");
+                        ffirstname = FriendList.get(i).getString("FirstName");
+                        flastname = FriendList.get(i).getString("LastName");
+                        femail = FriendList.get(i).getString("Email");
+                        fusername = FriendList.get(i).getString("UserID");
+
+                        String friendLat1 = Double.toString(friendLat);
+                        String friendLng1 = Double.toString(friendLng);
+                        //firstItemId = FriendList.get(0).getObjectId();
+                        //objectId=firstItemId;
+                        //status.setText(firstItemId);
+                        //System.out.println("FLat " +friendLat);
+                        //System.out.println("FLgn " +friendLng);
+                        double latDiff =  Math.abs (friendLat - lat);
+                        double lngDiff =  Math.abs (friendLng - lng);
+                        double distance = 1000*(latDiff+lngDiff);
+
+                        if(distance < 2 )
+                        {
+                            System.out.println("Username : " +fusername);
+                            saveFriendToSQLite(fusername, friendLat1, friendLng1,
+                            ffirstname, flastname, femail);
+                        }
+                    }
+
+                    Toast.makeText(getApplicationContext(), "Friend Saved", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     Log.d("score", "Error: " + e.getMessage());
                 }
             }
