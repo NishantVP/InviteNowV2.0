@@ -217,10 +217,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         usernameTextView = (TextView)findViewById(R.id.usersNameTextView);
         usernameTextView.setText(FirstName +" " + LastName);
         writeLocationToParse();
+        getNearbyLocationFromParse();
     }
 
     public void saveFriendToSQLite(String fusername, String friendLat ,String friendLng,
                                    String ffirstname,String flastname, String femail ) {
+
         SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
         ContentValues newValues = new ContentValues();
         newValues.put(friendLocationDB.COLUMN_FRIEND_USERNAME, fusername);
@@ -235,8 +237,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
         //-----For Debug-----//
 
-        db.insert(userDB.DATABASE_TABLE, null, newValues);
-        Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
+        db.insert(friendLocationDB.DATABASE_TABLE, null, newValues);
+        Toast.makeText(getApplicationContext(), "Friend Saved", Toast.LENGTH_SHORT).show();
     }
 
     public void getFromParse()
@@ -307,7 +309,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                // objectId = InviteTopic.getObjectId();
             }
         });
-        getNearbyLocationFromParse();
+        //getNearbyLocationFromParse();
         readFriendDB();
 
         System.out.println("FLat " +read_Friend_lat);
@@ -443,6 +445,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
 
     public void enterProfile(View view) {
+        getNearbyLocationFromParse();
         Intent enterProfile = new Intent(this, ProfileActivity.class);
         startActivity(enterProfile);
     }
