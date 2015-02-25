@@ -1,22 +1,46 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 
 public class ProfileActivity extends ActionBarActivity {
 
+    ImageView usersPhoto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        ImageView usersPhoto = (ImageView) findViewById(R.id.profilePhotoBig);
-        usersPhoto.setImageResource(R.drawable.panda);
+         usersPhoto = (ImageView) findViewById(R.id.profilePhotoBig);
+
+
+        Button b1 = (Button)findViewById(R.id.updatebut);
+
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decoder();
+            }
+        });
+
+
+    }
+
+    private void decoder() {
+
+        byte[] byteArray = getIntent().getByteArrayExtra("image");
+        Bitmap imageData = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        usersPhoto.setImageBitmap(imageData);
+
     }
 
     public void enterEditProfile(View view) {

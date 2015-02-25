@@ -13,12 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class EditProfileActivity extends ActionBarActivity {
 
-    private static final int RESULT_GALLERY =1;
+    private static final int RESULT_GALLERY =0;
     private static final int CAMERA_PIC_REQUEST =1;
+    Bitmap  imageData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +95,45 @@ public class EditProfileActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PIC_REQUEST) {
             if (resultCode == RESULT_OK) {
-             /*   tv.setText("Got picture!");
+
                 imageData = (Bitmap) data.getExtras().get("data");
-                ImageView image = (ImageView) findViewById(R.id.imageView1);
+                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
                 image.setImageBitmap(imageData);
+
+                // Compressing the image in Byte Array.
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                Intent in1 = new Intent(this, ProfileActivity.class);
+                in1.putExtra("image",byteArray);
+
             } else if (resultCode == RESULT_CANCELED){
-                tv.setText("Cancelled");*/
+
+                Toast.makeText(EditProfileActivity.this,"Profile picture update cancelled",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        else if (requestCode == RESULT_GALLERY){
+            if (resultCode == RESULT_OK) {
+
+     /*           imageData = (Bitmap) data.getExtras().get("data");
+                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
+                image.setImageBitmap(imageData);
+
+                // Compressing the image in Byte Array.
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                Intent in1 = new Intent(this, ProfileActivity.class);
+                in1.putExtra("image",byteArray); */
+
+            } else if (resultCode == RESULT_CANCELED){
+
+                Toast.makeText(EditProfileActivity.this,"Profile picture update cancelled",Toast.LENGTH_SHORT).show();
             }
         }
     }
