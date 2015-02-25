@@ -206,8 +206,6 @@ public class startScreenActivity extends ActionBarActivity {
                 }
             }
         });
-
-
     }
 
     public void doSignUp(View view)

@@ -2,6 +2,7 @@ package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -70,6 +71,11 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     String firstItemId;
 
     Double friendLat,friendLng;
+    String ffirstname,flastname,femail;
+    String fusername= "6692378282";
+
+    String read_Friend_lat1,read_Friend_lng1,read_Friend_username;
+    Double read_Friend_lat,read_Friend_lng;
 
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
@@ -124,6 +130,20 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         LastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
     }
 
+    private void readFriendDB() {
+        SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("Select * from  Friends", null);
+        int number = cursor.getCount();
+        cursor.moveToLast();
+        read_Friend_username = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_USERNAME));
+        read_Friend_lat1 = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LAT));
+        read_Friend_lng1 = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LNG));
+
+        read_Friend_lat = Double.parseDouble(read_Friend_lat1);
+        read_Friend_lng = Double.parseDouble(read_Friend_lng1);
+       // LastName = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_LASTNAME));
+    }
 
 
     @Override
@@ -199,6 +219,26 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         writeLocationToParse();
     }
 
+    public void saveFriendToSQLite(String fusername, String friendLat ,String friendLng,
+                                   String ffirstname,String flastname, String femail ) {
+        SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put(friendLocationDB.COLUMN_FRIEND_USERNAME, fusername);
+        newValues.put(friendLocationDB.COLUMN_FRIEND_LAT, friendLat);
+        newValues.put(friendLocationDB.COLUMN_FRIEND_LNG, friendLng);
+        newValues.put(friendLocationDB.COLUMN_FRIEND_FIRSTNAME, ffirstname);
+        newValues.put(friendLocationDB.COLUMN_FRIEND_LASTNAME, flastname);
+        newValues.put(friendLocationDB.COLUMN_FRIEND_EMAIL, femail);
+
+        //-----For Debug-----//
+        // newValues.put(NotesDB.NAME_COLUMN, path);
+        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
+        //-----For Debug-----//
+
+        db.insert(userDB.DATABASE_TABLE, null, newValues);
+        Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
+    }
+
     public void getFromParse()
     {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
@@ -268,6 +308,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             }
         });
         getNearbyLocationFromParse();
+        readFriendDB();
+
+        System.out.println("FLat " +read_Friend_lat);
+        System.out.println("FLgn " +read_Friend_lng);
 
        // InviteTopic.saveInBackground();
         //status.setText(objectId);
@@ -300,18 +344,26 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-        query.whereEqualTo("UserID", "6692378282");
+        query.whereEqualTo("UserID", fusername);
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> FriendList, ParseException e) {
                 if (e == null) {
                     Log.d("score", "Retrieved " + FriendList.size() + " scores");
                     friendLat = FriendList.get(0).getDouble("Lat");
                     friendLng = FriendList.get(0).getDouble("Lng");
+                    ffirstname = FriendList.get(0).getString("FirstName");
+                    flastname = FriendList.get(0).getString("LastName");
+                    femail = FriendList.get(0).getString("Email");
+
+                    String friendLat1= Double.toString(friendLat);
+                    String friendLng1= Double.toString(friendLng);
                     //firstItemId = FriendList.get(0).getObjectId();
                     //objectId=firstItemId;
                     //status.setText(firstItemId);
-                    System.out.println("FLat " +friendLat);
-                    System.out.println("FLgn " +friendLng);
+                    //System.out.println("FLat " +friendLat);
+                    //System.out.println("FLgn " +friendLng);
+                    saveFriendToSQLite(fusername, friendLat1 ,friendLng1,
+                            ffirstname, flastname, femail );
                 } else {
                     Log.d("score", "Error: " + e.getMessage());
                 }
