@@ -1,6 +1,5 @@
 ______________________________________
-Invite Now V 1.0
-
+Invite Now V2.0
 COEN 268 - Mobile Applications Development (Android)
 
 By
@@ -10,12 +9,49 @@ ______________________________________
 
 
 
-
-
-This document enlist tasks accomplished for at the Milestone 1 stage of the project
-
 -------------------------------------------
-Milestone 1
+Milestone 2
+--------------------------------------------
+
+List of high-level tasks accomplished -:
+
+1. Application Integration with Parse
+	- Implemented Sign-Up, Login activities using Parse Users class
+	- Implemented 'User Data' table for storing User's FirstName, LastName, EmailID and Location.
+	- User have to Sign up/Login only for the first time on any device. 
+		Username,Password is stored locally on SQLite and next time when user 
+		opens app, this Username-Password from SQLite is used to automatically check it on Parse and Authenticate Login.
+
+2. Implemented Google Play Service API 
+	- Last Known Location Data is taken using Google Location APIs and it is written to Parse Database in User-Specific row.
+
+3. One of the most features of the App, to locate nearby Friends is Implemented using Parse and Google APIs.
+	- On start, Application takes location data of friends from Parse, checks for nearby friends and Displays them in ListView
+	- On selecting any friend from ListView, an Automated SMS is sent to that friend using SmsManager.
+
+4. Integrated contacts with Phonebook contacts by accessing Phonebook.
+
+5. User is able to create user groups and display them.
+	- This group is created as a New Contact group in phonebook using WRITE_CONTACTS permission.
+	
+6. Profile Photo Upload Feature
+	- The user is able to take picture using camera and is able to Open Gallery to select photo
+	- Feature to store filepath and acess this image in all the activities is not yet implemented.
+
+----------------------------------------------------------------
+References and Citations -:
+1. Class Notes, Class Codes and HomeWorks
+2. developer.android.com
+3. Codesamples from stackoverflow.com and few other doubts solving websites
+4. Parse Documentation and Tutorials
+5. vogella.com Tutorials
+
+----------------------------------------------------------------------------
+
+
+Old Version - 
+-------------------------------------------
+Milestone 1 / Invite Now V1.0
 --------------------------------------------
 
 List of high-level tasks you accomplished -:
@@ -34,10 +70,5 @@ eg.- More than one radio button gets selected in SendInvitesActivity
 Therefore, the function that any activity will perform is not yet implemented
 Look and Feel of the application and Navigation between activities is accomplished at this milestone.
 ----------------------------------------------------------------
-References and Citations -:
-1. Class Notes, HomeWork 1 and 2
-2. developer.android.com
-3. Codesamples from stackoverflow.com and few other doubts solving websites
 
-----------------------------------------------------------------------------
 	
