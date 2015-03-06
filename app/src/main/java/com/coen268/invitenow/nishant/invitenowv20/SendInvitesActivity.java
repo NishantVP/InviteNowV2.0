@@ -28,9 +28,11 @@ import com.google.android.gms.location.LocationServices;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseException;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -315,6 +317,17 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
        // InviteTopic.saveInBackground();
         //status.setText(objectId);
+
+
+        // Create our Installation query
+        ParseQuery pushQuery = ParseInstallation.getQuery();
+        pushQuery.whereEqualTo("injuryReports", true);
+
+        // Send push notification to query
+        ParsePush push = new ParsePush();
+        push.setQuery(pushQuery); // Set our Installation query
+        push.setMessage("Willie Hayes injured by own pop fly.");
+        push.sendInBackground();
 
 
     }

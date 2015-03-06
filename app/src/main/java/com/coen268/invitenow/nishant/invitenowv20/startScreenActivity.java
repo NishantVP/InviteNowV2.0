@@ -21,6 +21,7 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.ParseQuery;
 import com.parse.ParseException;
@@ -53,12 +54,13 @@ public class startScreenActivity extends ActionBarActivity {
 
         username = (EditText)findViewById(R.id.usernameEditText);
         password = (EditText)findViewById(R.id.passwordEditText);
-
+/*
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
                 "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
-        //ParseACL defaultACL = new ParseACL();
+
+  */      //ParseACL defaultACL = new ParseACL();
         // Optionally enable public read access by default.
         // defaultACL.setPublicReadAccess(true);
         //ParseACL.setDefaultACL(defaultACL, true);
@@ -125,6 +127,7 @@ public class startScreenActivity extends ActionBarActivity {
             }
         });
         */
+
 
     }
 
