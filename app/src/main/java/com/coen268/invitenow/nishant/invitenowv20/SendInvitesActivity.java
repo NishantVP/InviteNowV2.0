@@ -36,6 +36,10 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -73,6 +77,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     Double friendLat,friendLng;
     String ffirstname,flastname,femail;
     String fusername= "6692378282";
+    String chanelsubNumber;
 
     String read_Friend_lat1,read_Friend_lng1,read_Friend_username;
     Double read_Friend_lat,read_Friend_lng;
@@ -218,6 +223,20 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         usernameTextView.setText(FirstName +" " + LastName);
         writeLocationToParse();
         getNearbyLocationFromParse();
+
+        /*Write channel for subscription*/
+        chanelsubNumber = "ch"+usernamePhone;
+        System.out.println(chanelsubNumber);
+        ParsePush.subscribeInBackground(chanelsubNumber, new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                }
+            }
+        });
     }
 
     public void saveFriendToSQLite(String fusername, String friendLat ,String friendLng,
@@ -320,14 +339,30 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
 
         // Create our Installation query
-        ParseQuery pushQuery = ParseInstallation.getQuery();
-        pushQuery.whereEqualTo("injuryReports", true);
+
+        //JSONObject data = new JSONObject("{\"alert\": \"The Mets scored!\"}");
+       JSONObject data = new JSONObject();
+        try {
+            data.put("sender", usernamePhone);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(data);
+
+    ParseQuery pushQuery = ParseInstallation.getQuery();
+                pushQuery.whereEqualTo("channels", "ch4085655175");
 
         // Send push notification to query
         ParsePush push = new ParsePush();
         push.setQuery(pushQuery); // Set our Installation query
-        push.setMessage("Willie Hayes injured by own pop fly.");
+
+        //ParsePush push = new ParsePush();
+        //push.setChannel("ch4085655175");
+        push.setMessage("Invited !! ");
+
+        //push.setData(data);
         push.sendInBackground();
+
 
 
     }

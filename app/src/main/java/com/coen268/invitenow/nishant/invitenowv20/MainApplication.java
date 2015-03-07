@@ -3,6 +3,7 @@ package com.coen268.invitenow.nishant.invitenowv20;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -28,12 +29,17 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
                 "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
+
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        //Toast.makeText(getApplicationContext(), "in app class",
+          //      Toast.LENGTH_SHORT).show();
+        System.out.println("Application class was run");
 
-
+/*
         ParsePush.subscribeInBackground("", new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -44,5 +50,6 @@ public class MainApplication extends Application {
                 }
             }
         });
+    */
     }
 }

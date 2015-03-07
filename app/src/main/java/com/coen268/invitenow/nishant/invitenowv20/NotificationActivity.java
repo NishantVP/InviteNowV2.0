@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.telephony.SmsManager;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -52,6 +55,25 @@ public class NotificationActivity extends ActionBarActivity {
                 startActivity(viewNote);
             }
         });
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String jsonData = extras.getString( "com.parse.Data" );
+        System.out.println(jsonData);
+
+        String message = "Not Known";
+        try {
+
+            JSONObject obj = new JSONObject(jsonData);
+
+            Log.d("My App", obj.toString());
+            message = obj.getString("alert");
+
+        } catch (Throwable t) {
+            Log.e("My App", "Could not parse malformed JSON: \"" + jsonData + "\"");
+        }
+
+        System.out.println(message);
 
     }
 

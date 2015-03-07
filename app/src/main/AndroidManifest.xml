@@ -29,10 +29,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        >
-        <meta-data android:name="com.coen268.invitenow.nishant.invitenowv20.MainApplication"
+        android:name="com.coen268.invitenow.nishant.invitenowv20.MainApplication"
         android:value="@integer/google_play_services_version"
-            />
+        >
+
+
+
 
         <activity
             android:name=".startScreenActivity"
@@ -125,7 +127,8 @@
                 <category android:name="com.coen268.invitenow.nishant.invitenowv20" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
+        <receiver android:name="com.coen268.invitenow.nishant.invitenowv20.Receiver"
+                  android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
                 <action android:name="com.parse.push.intent.DELETE" />
