@@ -55,5 +55,6 @@
     <string name="SignUp">Sign Up</string>
     <string name="title_activity_view_invites">ViewInvitesActivity</string>
     <string name="title_activity_quick_reply">QuickReplyActivity</string>
+    <string name="title_activity_nearby_friends">NearbyFriendsActivity</string>
 
 </resources>

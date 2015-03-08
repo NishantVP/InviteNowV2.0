@@ -82,6 +82,8 @@ public class startScreenActivity extends ActionBarActivity {
 
         readFromDB();
         deleteall();
+        deleteallRecipients();
+
         ParseUser.logInInBackground(usernameCheck, passwordCheck, new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
@@ -200,6 +202,16 @@ public class startScreenActivity extends ActionBarActivity {
         //db.rawQuery(delete, null);
         db.delete("Friends",null,null);
         Toast.makeText(getApplicationContext(), "Database Table cleared Deleted",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void deleteallRecipients(){
+        //SQLiteDatabase db = new userDB(this).getWritableDatabase();
+        SQLiteDatabase db = new recipientsDB(this).getWritableDatabase();
+        //String delete = "TRUNCATE FROM tweets";
+        //db.rawQuery(delete, null);
+        db.delete("Recipients",null,null);
+        Toast.makeText(getApplicationContext(), "Recipients Cleared",
                 Toast.LENGTH_SHORT).show();
     }
 

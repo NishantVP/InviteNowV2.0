@@ -140,6 +140,10 @@
             android:name=".QuickReplyActivity"
             android:label="@string/title_activity_quick_reply" >
         </activity>
+        <activity
+            android:name=".NearbyFriendsActivity"
+            android:label="@string/title_activity_nearby_friends" >
+        </activity>
     </application>
 
 </manifest>

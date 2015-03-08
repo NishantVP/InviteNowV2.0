@@ -5,23 +5,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Nishant on 2/24/2015.
+ * Created by Nishant on 3/8/2015.
  */
-public class friendLocationDB extends SQLiteOpenHelper {
+public class recipientsDB extends SQLiteOpenHelper {
+
 
     /* Schema and Contract */
     public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_FRIEND_USERNAME = "FRIEND_USERNAME";
-    public static final String COLUMN_FRIEND_LAT = "FRIEND_LAT";
-    public static final String COLUMN_FRIEND_LNG = "FRIEND_LNG";
-    public static final String COLUMN_FRIEND_FIRSTNAME = "FRIEND_FIRSTNAME";
-    public static final String COLUMN_FRIEND_LASTNAME = "FRIEND_LASTNAME";
-    public static final String COLUMN_FRIEND_EMAIL = "FRIEND_EMAIL";
-    //public static final String COLUMN_FRIEND_NEARBY_COUNT = "FRIEND_NEARBY_COUNT";
-    //public static final String COLUMN_FRIEND_YES_COUNT = "FRIEND_YES_COUNT";
+    public static final String COLUMN_RECIPIENT_USERNAME = "RECIPIENT_USERNAME";
+    public static final String COLUMN_RECIPIENT_FIRSTNAME = "RECIPIENT_FIRSTNAME";
+    public static final String COLUMN_RECIPIENT_LASTNAME = "RECIPIENT_LASTNAME";
 
-
-    public static final String DATABASE_TABLE = "Friends";
+    public static final String DATABASE_TABLE = "Recipients";
     public static final int DATABASE_VERSION = 1;
     /* Schema and Contract */
 
@@ -44,13 +39,11 @@ public class friendLocationDB extends SQLiteOpenHelper {
              + " text not null);";
  */
     private static final String DATABASE_CREATE = "CREATE TABLE "
-            + DATABASE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_FRIEND_USERNAME
-            + " TEXT," + COLUMN_FRIEND_LAT + " TEXT," + COLUMN_FRIEND_LNG + " TEXT,"
-            + COLUMN_FRIEND_FIRSTNAME + " TEXT,"
-            + COLUMN_FRIEND_LASTNAME + " TEXT,"
-            + COLUMN_FRIEND_EMAIL + " TEXT" + ")";
+            + DATABASE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_RECIPIENT_USERNAME
+            + " TEXT," + COLUMN_RECIPIENT_FIRSTNAME + " TEXT,"
+            + COLUMN_RECIPIENT_LASTNAME + " TEXT"+ ")";
 
-    public friendLocationDB(Context context) {
+    public recipientsDB(Context context) {
         super(context, DATABASE_TABLE, null, DATABASE_VERSION);
     }
 
@@ -71,4 +64,5 @@ public class friendLocationDB extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
+
 }

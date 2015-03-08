@@ -1,9 +1,11 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -54,6 +56,8 @@ public class SelectFromContactsActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 StringBuilder checkedcontacts = new StringBuilder();
+                String PhoneNumber;
+                String Name;
 
                 for(int i =0 ; i < name.size();i++){
 
@@ -62,9 +66,12 @@ public class SelectFromContactsActivity extends ActionBarActivity {
                         //checkedcontacts.append("\n");
                         checkedcontacts.append(phno.get(i).toString());
                         checkedcontacts.append("\n");
+                        PhoneNumber = phno.get(i).toString();
+                        Name = name.get(i).toString();
+                        saveRecipientToSQLite(PhoneNumber,Name,"");
                     }
                     else{
-                        System.out.println("Not Checked......"+name.get(i).toString());
+                        //System.out.println("Not Checked......"+name.get(i).toString());
                     }
                 }
                 //Toast.makeText(SelectFromContactsActivity.this,checkedcontacts,Toast.LENGTH_SHORT).show();
@@ -78,6 +85,19 @@ public class SelectFromContactsActivity extends ActionBarActivity {
 
             }
         });
+
+    }
+
+    public void saveRecipientToSQLite(String rusername,
+                                   String rfirstname,String rlastname ) {
+
+        SQLiteDatabase db = new recipientsDB(this).getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put(recipientsDB.COLUMN_RECIPIENT_USERNAME, rusername);
+        newValues.put(recipientsDB.COLUMN_RECIPIENT_FIRSTNAME, rfirstname);
+        newValues.put(recipientsDB.COLUMN_RECIPIENT_LASTNAME, rlastname);
+
+        db.insert(recipientsDB.DATABASE_TABLE, null, newValues);
 
     }
 

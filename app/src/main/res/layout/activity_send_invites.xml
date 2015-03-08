@@ -195,12 +195,12 @@
             <Button
                 android:layout_width="120dp"
                 android:layout_height="70dp"
-                android:text="@string/selectGroupssButtonDisplayString"
-                android:id="@+id/selectGroupsButton"
+                android:text="Nearby"
+                android:id="@+id/selectNearbyButton"
                 android:layout_below="@+id/autoInviteCheckBox"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="10dp"
-                android:onClick="enterSelectGroups"
+                android:onClick="enterSelectNearbyFriends"
                 />
 
 

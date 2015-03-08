@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -92,7 +93,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     List<String> name = new ArrayList<String>();
     List<String> phno = new ArrayList<String>();
-    String[] PhoneNumbersArray = new String[500];
+    List<String> PhoneNumbersProcessed = new ArrayList<String>();
+
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -168,32 +170,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         setContentView(R.layout.activity_send_invites);
 
         messageWritten = (EditText)findViewById(R.id.meetSubject);
-        getAllContacts(this.getContentResolver());
-        //System.out.println(phno);
 
-        for(int i=0;i<500;i++)
-        {
-            PhoneNumbersArray[i]=phno.get(0);
-            phno.remove(0);
-        }
-        for(int i=0;i<500;i++)
-        {
-            //System.out.println(PhoneNumbersArray[i]);
-        }
-
-        for(int i=0;i<500;i++)
-        {
-            //PhoneNumbersArray[i].replace(" ","");
-            //PhoneNumbersArray[i].replace("-","");
-            //PhoneNumbersArray[i].replace("+","");
-            PhoneNumbersArray[i]=PhoneNumbersArray[i].replaceAll("\\W","");
-
-            if(PhoneNumbersArray[i].length()>10) {
-                PhoneNumbersArray[i] = PhoneNumbersArray[i].substring(PhoneNumbersArray[i].length() - 10);
-                System.out.println(PhoneNumbersArray[i]);
-            }
-        }
-
+        processPhoneNumbers();
 
 /*
         phno.toArray(PhoneNumbersArray);
@@ -282,6 +260,54 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 }
             }
         });
+    }
+
+    public void processPhoneNumbers()
+    {
+
+        getAllContacts(this.getContentResolver());
+        //System.out.println(phno);
+
+        final int totalNumbers = phno.size();
+        String[] PhoneNumbersArray = new String[totalNumbers];
+        for(int i=0;i<totalNumbers;i++)
+        {
+            PhoneNumbersArray[i]=phno.get(0);
+            phno.remove(0);
+            PhoneNumbersArray[i]=PhoneNumbersArray[i].replaceAll("\\W","");
+
+            if(PhoneNumbersArray[i].length()>10)
+            {
+                PhoneNumbersArray[i] = PhoneNumbersArray[i].substring(PhoneNumbersArray[i].length() - 10);
+            }
+
+        }
+        PhoneNumbersProcessed = Arrays.asList(PhoneNumbersArray);
+        System.out.println(totalNumbers);
+        System.out.println(PhoneNumbersProcessed.get(PhoneNumbersProcessed.size()-1));
+
+
+        /*
+        for(int i=0;i<totalNumbers;i++)
+        {
+            //System.out.println(PhoneNumbersArray[i]);
+        }
+
+        for(int i=0;i<totalNumbers;i++)
+        {
+            //PhoneNumbersArray[i].replace(" ","");
+            //PhoneNumbersArray[i].replace("-","");
+            //PhoneNumbersArray[i].replace("+","");
+            PhoneNumbersArray[i]=PhoneNumbersArray[i].replaceAll("\\W","");
+
+            if(PhoneNumbersArray[i].length()>10) {
+                PhoneNumbersArray[i] = PhoneNumbersArray[i].substring(PhoneNumbersArray[i].length() - 10);
+                //System.out.println(PhoneNumbersArray[i]);
+            }
+        }
+        */
+
+
     }
 
     public void saveFriendToSQLite(String fusername, String friendLat ,String friendLng,
@@ -465,9 +491,18 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                         double lngDiff =  Math.abs (friendLng - lng);
                         double distance = 1000*(latDiff+lngDiff);
 
-                        if(distance < 2 )
+                        boolean inContactsFlag = PhoneNumbersProcessed.contains(fusername);
+
+                        /*
+                        if(distance < 2)
                         {
-                            System.out.println("Username : " +fusername);
+                            System.out.println("All Nearby : " +fusername);
+                        }
+                        */
+
+                        if(distance < 2 && inContactsFlag == true)
+                        {
+                            System.out.println("User In Contacts : " +fusername);
                             saveFriendToSQLite(fusername, friendLat1, friendLng1,
                             ffirstname, flastname, femail);
                         }
@@ -569,6 +604,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     public void enterSelectGroups(View view) {
         Intent enterSelectGroups = new Intent(this, SelectFromGroupsActivity.class);
         startActivity(enterSelectGroups);
+    }
+
+
+    public void enterSelectNearbyFriends(View view) {
+        Intent enterSelectNearbyFriends = new Intent(this, NearbyFriendsActivity.class);
+        startActivity(enterSelectNearbyFriends);
     }
 
     public void enterSettings(View view) {
