@@ -55,7 +55,7 @@ public class NotificationActivity extends ActionBarActivity {
                 startActivity(viewNote);
             }
         });
-
+     /*
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         String jsonData = extras.getString( "com.parse.Data" );
@@ -74,7 +74,7 @@ public class NotificationActivity extends ActionBarActivity {
         }
 
         System.out.println(message);
-
+     */
     }
 
     @Override

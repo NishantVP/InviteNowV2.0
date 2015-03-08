@@ -82,6 +82,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     String read_Friend_lat1,read_Friend_lng1,read_Friend_username;
     Double read_Friend_lat,read_Friend_lng;
 
+    String MessageToSend;
+    String MessageTopic;
+    String MeetTime;
+    EditText messageWritten;
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -155,6 +159,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_invites);
+
+        messageWritten = (EditText)findViewById(R.id.meetSubject);
+
+
 /*
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
@@ -341,6 +349,11 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         // Create our Installation query
 
         //JSONObject data = new JSONObject("{\"alert\": \"The Mets scored!\"}");
+
+        MessageTopic = messageWritten.getText().toString();
+        MeetTime = " in 15 min";
+        MessageToSend = usernamePhone + ": " + MessageTopic + MeetTime;
+
        JSONObject data = new JSONObject();
         try {
             data.put("sender", usernamePhone);
@@ -358,7 +371,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         //ParsePush push = new ParsePush();
         //push.setChannel("ch4085655175");
-        push.setMessage("Invited !! ");
+        push.setMessage(MessageToSend);
 
         //push.setData(data);
         push.sendInBackground();
