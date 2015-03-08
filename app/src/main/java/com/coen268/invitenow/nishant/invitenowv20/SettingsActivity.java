@@ -23,7 +23,8 @@ public class SettingsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_settings);
 
 
-        Menus = new String[] {" Profile", " Notifications"," Location Settings"," Groups","Preferences"};
+        Menus = new String[] {" Profile", " Notifications"," Location Settings"," Groups",
+                "Preferences","View Invites"};
         menuList = (ListView) findViewById(R.id.listView);
         menuListAdapter = new settingsMenuListAdapter(this, Menus);
 
@@ -64,6 +65,12 @@ public class SettingsActivity extends ActionBarActivity {
                     case 4:
                         Intent enterPreferences = new Intent(SettingsActivity.this, PreferencesActivity.class);
                         startActivity(enterPreferences);
+
+                        break;
+
+                    case 5:
+                        Intent enterViewInvites = new Intent(SettingsActivity.this, ViewInvitesActivity.class);
+                        startActivity(enterViewInvites);
 
                         break;
                 }

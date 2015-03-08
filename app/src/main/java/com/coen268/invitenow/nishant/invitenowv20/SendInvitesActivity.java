@@ -362,7 +362,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         }
         System.out.println(data);
 
-    ParseQuery pushQuery = ParseInstallation.getQuery();
+        ParseQuery pushQuery = ParseInstallation.getQuery();
                 pushQuery.whereEqualTo("channels", "ch4085655175");
 
         // Send push notification to query
@@ -375,8 +375,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         //push.setData(data);
         push.sendInBackground();
-
-
 
     }
 

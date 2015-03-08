@@ -33,7 +33,7 @@ public class ViewInvitesActivity extends ActionBarActivity {
         readFromMessageDB();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.message_list_item,messageList);
         MessageListView.setAdapter(adapter);
-
+        /*
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         String jsonData = extras.getString( "com.parse.Data" );
@@ -55,7 +55,7 @@ public class ViewInvitesActivity extends ActionBarActivity {
             System.out.println(message);
             saveMessageToSQLite(message);
         }
-
+        */
     }
 
 
