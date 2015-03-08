@@ -2,6 +2,7 @@ package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +42,7 @@ import com.parse.SaveCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -86,6 +89,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     String MessageTopic;
     String MeetTime;
     EditText messageWritten;
+
+    List<String> name = new ArrayList<String>();
+    List<String> phno = new ArrayList<String>();
+    String[] PhoneNumbersArray = new String[500];
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -161,8 +168,38 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         setContentView(R.layout.activity_send_invites);
 
         messageWritten = (EditText)findViewById(R.id.meetSubject);
+        getAllContacts(this.getContentResolver());
+        //System.out.println(phno);
+
+        for(int i=0;i<500;i++)
+        {
+            PhoneNumbersArray[i]=phno.get(0);
+            phno.remove(0);
+        }
+        for(int i=0;i<500;i++)
+        {
+            //System.out.println(PhoneNumbersArray[i]);
+        }
+
+        for(int i=0;i<500;i++)
+        {
+            //PhoneNumbersArray[i].replace(" ","");
+            //PhoneNumbersArray[i].replace("-","");
+            //PhoneNumbersArray[i].replace("+","");
+            PhoneNumbersArray[i]=PhoneNumbersArray[i].replaceAll("\\W","");
+
+            if(PhoneNumbersArray[i].length()>10) {
+                PhoneNumbersArray[i] = PhoneNumbersArray[i].substring(PhoneNumbersArray[i].length() - 10);
+                System.out.println(PhoneNumbersArray[i]);
+            }
+        }
 
 
+/*
+        phno.toArray(PhoneNumbersArray);
+        System.out.println("The Array - ");
+        System.out.println(PhoneNumbersArray);
+*/
 /*
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
@@ -463,6 +500,30 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         });
         Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
         */
+    }
+
+    private void getAllContacts(ContentResolver contentResolver) {
+
+
+        Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        while(cursor.moveToNext()){
+            String name1 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String phn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            Toast.makeText(SendInvitesActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
+            /*if(!name.contains(name1)){
+
+                name.add(name1);
+                phno.add(phn);
+            }*/
+            if(!phno.contains(phn)){
+
+                name.add(name1);
+                phno.add(phn);
+            }
+
+
+        }
+        cursor.close();
     }
 
     /* Create a new dialog for time picker */
