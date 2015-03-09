@@ -1,10 +1,12 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -72,7 +74,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     private String provider;
     private Location mLastLocation;
     GoogleApiClient mGoogleApiClient;
-    Double lat,lng;
+    Double lat = 0.0;
+    Double lng = 0.0;
 
     String usernamePhone;
     String FirstName;
@@ -111,6 +114,9 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     RadioButton rb1,rb2,rb3,rb4,rb5;
     Boolean flag = false;
+
+    TextView TestingTextView;
+    int invtesSentFlag =0;
 
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
@@ -244,9 +250,15 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         setContentView(R.layout.activity_send_invites);
 
         messageWritten = (EditText)findViewById(R.id.meetSubject);
+        TestingTextView = (TextView) findViewById(R.id.testingTextView);
 
         processPhoneNumbers();
         readFriendFromDB();
+
+        invtesSentFlag = 0;
+        // Get the location manager
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
 
         rb1 = (RadioButton)findViewById(R.id.time5MinRadioButton);
         rb2 = (RadioButton)findViewById(R.id.time15MinRadioButton);
@@ -327,10 +339,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
 */
         /* Set User's Photo in Profile bar at top */
-
-        // Get the location manager
-        buildGoogleApiClient();
-        mGoogleApiClient.connect();
 
         //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // Define the criteria how to select the locatioin provider -> use
@@ -478,6 +486,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 toSMSCounter++;
             }
         }
+        if(NumberToApp!=0 || NumberToSMS !=0)
+        {
+            invtesSentFlag = 0;
+        }
 
     }
 
@@ -504,8 +516,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
 
     public void doTesting(View view) {
+        deleteallRecipients();
         readRecipientsDB();
         processRecipients();
+
     }
 
     public void getFromParse()
@@ -630,22 +644,42 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         System.out.println("App " +NumberToApp +"SMS " +NumberToSMS);
 
-        for(int i =0;i<NumberToApp;i++)
-        {
+        String sentToastToApp = Integer.toString(NumberToApp);
+        String sentToastToSMS = Integer.toString(NumberToSMS);
 
-            ParseQuery pushQuery = ParseInstallation.getQuery();
-            pushQuery.whereEqualTo("channels", RecipientsToApp[i]);
-            // Send push notification to query
-            ParsePush push = new ParsePush();
-            push.setQuery(pushQuery); // Set our Installation query
-            //ParsePush push = new ParsePush();
-            //push.setChannel("ch4085655175");
-            push.setMessage(MessageToSend);
-            //push.setData(data);
-            push.sendInBackground();
+        boolean zeroRecipients = false;
+
+        if(NumberToApp==0&&NumberToSMS==0)
+        {
+            zeroRecipients=true;
+        }
+        if(invtesSentFlag==1 || zeroRecipients==true)
+        {
+            Toast.makeText(this, "Select Recipients ", Toast.LENGTH_SHORT).show();
         }
 
+        int i;
+        if(invtesSentFlag==0) {
+            for (i = 0; i < NumberToApp; i++) {
 
+                ParseQuery pushQuery = ParseInstallation.getQuery();
+                pushQuery.whereEqualTo("channels", RecipientsToApp[i]);
+                // Send push notification to query
+                ParsePush push = new ParsePush();
+                push.setQuery(pushQuery); // Set our Installation query
+                //ParsePush push = new ParsePush();
+                //push.setChannel("ch4085655175");
+                push.setMessage(MessageToSend);
+                //push.setData(data);
+                push.sendInBackground();
+            }
+            if (i == NumberToApp && i!=0) {
+                Toast.makeText(this, "Sending.." + sentToastToApp + " via App", Toast.LENGTH_SHORT).show();
+                NumberToApp = 0;
+            }
+        }
+
+        /*
         for(int i =0;i<NumberToSMS;i++)
         {
             SmsManager smsManager = SmsManager.getDefault();
@@ -654,28 +688,89 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
              //       Toast.LENGTH_SHORT).show();
 
         }
+        */
+
+        if(NumberToSMS>0) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            final String sentToastToSMSdialog = Integer.toString(NumberToSMS);
+            dialog.setMessage(sentToastToSMSdialog +" invitations will be sent by SMS");
+            dialog.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int i;
+                    if(invtesSentFlag==0) {
+                        for (i = 0; i < NumberToSMS; i++) {
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(RecipientsToSMS[i], null, MessageToSend, null, null);
+                            //Toast.makeText(NearbyFriendsActivity.this, "message sent to: " + phoneNumbers[p],
+                            //       Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        if (i == NumberToSMS && i !=0) {
+                            Toast.makeText(SendInvitesActivity.this, "Sending.."
+                                    + sentToastToSMSdialog + " via SMS", Toast.LENGTH_SHORT).show();
+                            NumberToSMS = 0;
+                        }
+                        deleteallRecipients();
+                    }
+                }
+
+            });
+
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    NumberToSMS = 0;
+                    deleteallRecipients();
+                    dialog.cancel();
+                }
+            });
+
+            dialog.show();
+
+        }
+        System.out.println("Number to SMS" +NumberToSMS);
+
+        if(NumberToSMS==0)
+        {
+            System.out.println("Recipients Deleted");
+            invtesSentFlag=1;
+            deleteallRecipients();
+        }
+
+
+        //Toast.makeText(this, "Sending.." +sentToastToApp +" via App" +
+          //                              sentToastToSMS +" via SMS", Toast.LENGTH_SHORT).show();
 
     }
 
     public void writeLocationToParse()
     {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-        // Retrieve the object by id
-        query.getInBackground(objectId, new GetCallback<ParseObject>() {
-            public void done(ParseObject UserData, ParseException e) {
-                if (e == null) {
-                    // Now let's update it with some new data. In this case, only cheatMode and score
-                    // will get sent to the Parse Cloud. playerName hasn't changed.
-                    UserData.put("Lat", lat);
-                    UserData.put("Lng", lng);
-                    //UserData.put("LastName", lastName);
-                    //UserData.put("Email", email);
-                    UserData.saveInBackground();
+        if(lat != 0 && lng != 0) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
+            // Retrieve the object by id
+            query.getInBackground(objectId, new GetCallback<ParseObject>() {
+                public void done(ParseObject UserData, ParseException e) {
+                    if (e == null) {
+                        // Now let's update it with some new data. In this case, only cheatMode and score
+                        // will get sent to the Parse Cloud. playerName hasn't changed.
+                        UserData.put("Lat", lat);
+                        UserData.put("Lng", lng);
+                        //UserData.put("LastName", lastName);
+                        //UserData.put("Email", email);
+                        UserData.saveInBackground();
 
+                    }
                 }
-            }
-        });
-        Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
+            });
+            Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
+        }
+
+        String LatitudeforTesting = Double.toString(lat);
+        String LongitudeforTesting = Double.toString(lng);
+        TestingTextView.setText(LatitudeforTesting +"," +LongitudeforTesting);
+
     }
 
     public void getNearbyLocationFromParse()
@@ -789,6 +884,16 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         return null;
     }
 
+    public void deleteallRecipients(){
+        //SQLiteDatabase db = new userDB(this).getWritableDatabase();
+        SQLiteDatabase db = new recipientsDB(this).getWritableDatabase();
+        //String delete = "TRUNCATE FROM tweets";
+        //db.rawQuery(delete, null);
+        db.delete("Recipients",null,null);
+        Toast.makeText(getApplicationContext(), "Recipients Cleared",
+                Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -849,6 +954,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             Toast.makeText(this, "location taken", Toast.LENGTH_SHORT).show();
             lat = (double) (mLastLocation.getLatitude());
             lng = (double) (mLastLocation.getLongitude());
+            Toast.makeText(this, "Connected to Google", Toast.LENGTH_SHORT).show();
+            writeLocationToParse();
 
         }
 

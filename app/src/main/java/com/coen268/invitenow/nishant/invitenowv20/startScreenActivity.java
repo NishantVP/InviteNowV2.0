@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.LocationManager;
@@ -59,6 +60,21 @@ public class startScreenActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
+
+        final String PREFS_NAME = "MyPrefsFile";
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+        if (settings.getBoolean("my_first_time", true)) {
+            //the app is being launched for first time, do something
+            Log.d("Comments", "First time");
+
+            // first time task
+            saveUserToSQLite("sampleUser", "samplePassword");
+            // record the fact that the app has been started at least once
+            settings.edit().putBoolean("my_first_time", false).commit();
+        }
+
 
         username = (EditText)findViewById(R.id.usernameEditText);
         password = (EditText)findViewById(R.id.passwordEditText);
@@ -405,12 +421,13 @@ public class startScreenActivity extends ActionBarActivity {
         */
         Cursor cursor = db.rawQuery("Select * from  User", null);
         int number = cursor.getCount();
-        if(number == 0)
+        if(number <= 0)
         {
             saveUserToSQLite("sampleUser", "samplePassword");
         }
 
         cursor.moveToLast();
+
         usernameCheck = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
         passwordCheck = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PASSWORD));
 

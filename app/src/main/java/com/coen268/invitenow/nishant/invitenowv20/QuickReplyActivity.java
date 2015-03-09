@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -26,11 +28,15 @@ public class QuickReplyActivity extends ActionBarActivity {
     String senderChannel;
     String usernamePhone,objectId,FirstName,LastName;
     String replyMessage = "NotUpdated";
+    Button Yes,No,Later;
+    TextView MessageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_reply);
+
+        MessageView = (TextView) findViewById(R.id.messageTextView);
 
         readFromDB();
 
@@ -55,9 +61,26 @@ public class QuickReplyActivity extends ActionBarActivity {
             System.out.println(message);
             saveMessageToSQLite(message);
             sender = message.substring(0,Math.min(message.length(),10));
+            MessageView.setText(message);
+            System.out.println("Sender: " +sender);
+        }
+        boolean isThisReply = sender.equals("Reply from");
+        if(isThisReply == true )
+        {
+            Yes= (Button) findViewById(R.id.YesButton);
+            No= (Button) findViewById(R.id.NoButton);
+            Later= (Button) findViewById(R.id.LaterButton);
+
+            Yes.setEnabled(false);
+            No.setEnabled(false);
+            Later.setEnabled(false);
+            System.out.println("Should have been Disabled");
+
+
         }
 
         senderChannel = "ch"+sender;
+
     }
 
 

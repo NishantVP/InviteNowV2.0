@@ -96,7 +96,26 @@
                 android:layout_below="@id/meetSubject"
                 android:layout_margin="20dp"
                 android:layout_centerHorizontal="true" />
-        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/testingTextView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear Recipients"
+            android:id="@+id/button"
+            android:onClick="doTesting"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="350dp"
@@ -213,16 +232,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/inviteButton"
                 />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Testing"
-                android:id="@+id/button"
-                android:layout_below="@+id/inviteButton"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:onClick="doTesting"/>
 
         </RelativeLayout>
 
