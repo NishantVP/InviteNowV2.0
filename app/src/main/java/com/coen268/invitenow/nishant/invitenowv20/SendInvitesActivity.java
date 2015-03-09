@@ -38,7 +38,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
+import android.telephony.SmsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -94,6 +94,13 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     List<String> name = new ArrayList<String>();
     List<String> phno = new ArrayList<String>();
     List<String> PhoneNumbersProcessed = new ArrayList<String>();
+    ArrayList<String> recipientsList = new ArrayList<>();
+    String[] RecipientsPhoneNumbers = new String[100];
+    String[] RecipientsFirstNames = new String[100];
+    String[] RecipientsLastNames = new String[100];
+    String[] RecipientsToApp = new String[100];
+    String[] RecipientsToSMS = new String[100];
+    ArrayList<String> friendListParse = new ArrayList<>();
 
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
@@ -148,21 +155,71 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         LastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
     }
 
-    private void readFriendDB() {
-        SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("Select * from  Friends", null);
-        int number = cursor.getCount();
-        cursor.moveToLast();
-        read_Friend_username = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_USERNAME));
-        read_Friend_lat1 = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LAT));
-        read_Friend_lng1 = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LNG));
+    public void readRecipientsDB() {
+        SQLiteDatabase db = new recipientsDB(this).getWritableDatabase();
+        String where = null;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String[] resultColumns = {recipientsDB.COLUMN_ID, recipientsDB.COLUMN_RECIPIENT_USERNAME,
+                recipientsDB.COLUMN_RECIPIENT_FIRSTNAME, recipientsDB.COLUMN_RECIPIENT_LASTNAME};
 
-        read_Friend_lat = Double.parseDouble(read_Friend_lat1);
-        read_Friend_lng = Double.parseDouble(read_Friend_lng1);
-       // LastName = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_LASTNAME));
+        Cursor cursor = db.query(recipientsDB.DATABASE_TABLE, resultColumns, where, whereArgs,
+                groupBy, having, order);
+
+        int i=0;
+        while (cursor.moveToNext()) {
+            int idInDB = cursor.getInt(cursor.getColumnIndex(recipientsDB.COLUMN_ID));
+
+            String username = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_USERNAME));
+            String firstname = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_FIRSTNAME));
+            String lastname = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_LASTNAME));
+            /* For Debug */
+            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
+            /* For Debug */
+            if(!recipientsList.contains(username)) {
+                RecipientsPhoneNumbers[i]=username;
+                RecipientsFirstNames[i]=firstname;
+                RecipientsLastNames[i]=lastname;
+                recipientsList.add(username);
+                i++;
+            }
+        }
     }
 
+    public void readFriendFromDB() {
+        SQLiteDatabase db = new friendLocationDB(this).getWritableDatabase();
+        String where = null;
+        String whereArgs[] = null;
+        String groupBy = null;
+        String having = null;
+        String order = null;
+        String[] resultColumns = {friendLocationDB.COLUMN_ID, friendLocationDB.COLUMN_FRIEND_USERNAME,
+                friendLocationDB.COLUMN_FRIEND_LAT, friendLocationDB.COLUMN_FRIEND_LNG,
+                friendLocationDB.COLUMN_FRIEND_FIRSTNAME, friendLocationDB.COLUMN_FRIEND_LASTNAME,
+                friendLocationDB.COLUMN_FRIEND_EMAIL};
+
+        Cursor cursor = db.query(friendLocationDB.DATABASE_TABLE, resultColumns, where, whereArgs,
+                groupBy, having, order);
+
+        int i=0;
+        while (cursor.moveToNext()) {
+            int idInDB = cursor.getInt(cursor.getColumnIndex(friendLocationDB.COLUMN_ID));
+
+            String username = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_USERNAME));
+            String firstname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_FIRSTNAME));
+            String lastname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LASTNAME));
+            /* For Debug */
+            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
+            /* For Debug */
+            if(!friendListParse.contains(username)) {
+                friendListParse.add(username);
+                i++;
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +229,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         messageWritten = (EditText)findViewById(R.id.meetSubject);
 
         processPhoneNumbers();
+        readFriendFromDB();
+        readRecipientsDB();
 
 /*
         phno.toArray(PhoneNumbersArray);
@@ -286,27 +345,41 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         System.out.println(totalNumbers);
         System.out.println(PhoneNumbersProcessed.get(PhoneNumbersProcessed.size()-1));
 
+    }
 
-        /*
+
+    public void processRecipients()
+    {
+        final int totalNumbers = 100;
+        String[] RecipientsPhoneNumbers_clean = new String[totalNumbers];
+        int toAppCounter = 0;
+        int toSMSCounter = 0;
         for(int i=0;i<totalNumbers;i++)
         {
-            //System.out.println(PhoneNumbersArray[i]);
-        }
 
-        for(int i=0;i<totalNumbers;i++)
-        {
-            //PhoneNumbersArray[i].replace(" ","");
-            //PhoneNumbersArray[i].replace("-","");
-            //PhoneNumbersArray[i].replace("+","");
-            PhoneNumbersArray[i]=PhoneNumbersArray[i].replaceAll("\\W","");
+            //PhoneNumbersArray[i]=phno.get(0);
+            //phno.remove(0);
+            RecipientsPhoneNumbers_clean[i]=RecipientsPhoneNumbers[i].replaceAll("\\W","");
 
-            if(PhoneNumbersArray[i].length()>10) {
-                PhoneNumbersArray[i] = PhoneNumbersArray[i].substring(PhoneNumbersArray[i].length() - 10);
-                //System.out.println(PhoneNumbersArray[i]);
+            if(RecipientsPhoneNumbers_clean[i].length()>10)
+            {
+                RecipientsPhoneNumbers_clean[i] =
+                        RecipientsPhoneNumbers_clean[i].substring(RecipientsPhoneNumbers_clean[i].length() - 10);
+            }
+            if(friendListParse.contains(RecipientsPhoneNumbers_clean[i]))
+            {
+                RecipientsToApp[toAppCounter]="ch"+RecipientsPhoneNumbers_clean[i];
+                toAppCounter++;
+                System.out.println("To App:" +RecipientsToApp[toAppCounter]);
+
+            }
+            else
+            {
+                RecipientsToSMS[toSMSCounter]=RecipientsPhoneNumbers[i];
+                toSMSCounter++;
+                System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter]);
             }
         }
-        */
-
 
     }
 
@@ -387,6 +460,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     public void inviteButtonClicked(View view)
     {
+        /*
         // Enable Local Datastore.
         final ParseObject InviteTopic = new ParseObject("InviteTopic");
         InviteTopic.put("Lat", lat);
@@ -407,16 +481,19 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
        // InviteTopic.saveInBackground();
         //status.setText(objectId);
-
+        */
 
         // Create our Installation query
 
         //JSONObject data = new JSONObject("{\"alert\": \"The Mets scored!\"}");
 
+        processRecipients();
+
         MessageTopic = messageWritten.getText().toString();
         MeetTime = " in 15 min";
         MessageToSend = usernamePhone + ": " + MessageTopic + MeetTime;
 
+       /*
        JSONObject data = new JSONObject();
         try {
             data.put("sender", usernamePhone);
@@ -424,20 +501,35 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             e.printStackTrace();
         }
         System.out.println(data);
+        */
 
-        ParseQuery pushQuery = ParseInstallation.getQuery();
-                pushQuery.whereEqualTo("channels", "ch4085655175");
+        int NumberToApp =  RecipientsToApp.length;
+        int NumberToSMS =  RecipientsToApp.length;
 
-        // Send push notification to query
-        ParsePush push = new ParsePush();
-        push.setQuery(pushQuery); // Set our Installation query
+        for(int i =0;i<NumberToApp;i++)
+        {
 
-        //ParsePush push = new ParsePush();
-        //push.setChannel("ch4085655175");
-        push.setMessage(MessageToSend);
+            ParseQuery pushQuery = ParseInstallation.getQuery();
+            pushQuery.whereEqualTo("channels", RecipientsToApp[i]);
+            // Send push notification to query
+            ParsePush push = new ParsePush();
+            push.setQuery(pushQuery); // Set our Installation query
+            //ParsePush push = new ParsePush();
+            //push.setChannel("ch4085655175");
+            push.setMessage(MessageToSend);
+            //push.setData(data);
+            push.sendInBackground();
+        }
 
-        //push.setData(data);
-        push.sendInBackground();
+
+        for(int i =0;i<NumberToSMS;i++)
+        {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(RecipientsToSMS[i],null,MessageToSend,null,null);
+            //Toast.makeText(NearbyFriendsActivity.this, "message sent to: " + phoneNumbers[p],
+             //       Toast.LENGTH_SHORT).show();
+
+        }
 
     }
 
