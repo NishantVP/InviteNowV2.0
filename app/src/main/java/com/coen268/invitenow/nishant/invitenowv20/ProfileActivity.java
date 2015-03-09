@@ -1,22 +1,70 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
 
 
 public class ProfileActivity extends ActionBarActivity {
 
+    String filepath;
+
+    File imgFile;
+    ImageView usersPhoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        ImageView usersPhoto = (ImageView) findViewById(R.id.profilePhotoBig);
-        usersPhoto.setImageResource(R.drawable.panda);
+
+        usersPhoto = (ImageView)findViewById(R.id.profilePhotoBig);
+
+        SQLiteDatabase db = new PhotoDB(this).getWritableDatabase();
+        String[] result = {PhotoDB.UID,PhotoDB.PIC_FILEPATH};
+
+        Cursor cursor = db.query(PhotoDB.TABLE_NAME,result,null,null,null,null,null);
+
+        int numb = cursor.getCount();
+        if(numb <= 0){
+
+            usersPhoto.setImageResource(R.drawable.panda);
+        }
+        else{
+            cursor.moveToLast();
+            filepath = cursor.getString(1);
+            imageLoad();
+        }
+
+    }
+
+    public void imageLoad(){
+
+//        SQLiteDatabase db = new PhotoDB(this).getWritableDatabase();
+//        String[] result = {PhotoDB.UID,PhotoDB.PIC_FILEPATH};
+//
+//        Cursor cursor = db.query(PhotoDB.TABLE_NAME,result,null,null,null,null,null);
+//        cursor.moveToLast();
+//        filepath = cursor.getString(1);
+
+        Toast.makeText(ProfileActivity.this,"Path:" +filepath,Toast.LENGTH_SHORT).show();
+        imgFile = new File(filepath);
+        String str= imgFile.getAbsolutePath();
+        Log.d("***** error***",str);
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inSampleSize = 5;
+        Bitmap bitmap = BitmapFactory.decodeFile(str);
+        usersPhoto.setImageBitmap(bitmap);
     }
 
     public void enterEditProfile(View view) {

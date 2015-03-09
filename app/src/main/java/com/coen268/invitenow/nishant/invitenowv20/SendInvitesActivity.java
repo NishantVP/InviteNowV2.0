@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -94,13 +95,22 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     List<String> name = new ArrayList<String>();
     List<String> phno = new ArrayList<String>();
     List<String> PhoneNumbersProcessed = new ArrayList<String>();
-    ArrayList<String> recipientsList = new ArrayList<>();
+
+    ArrayList<String> recipientsPhoneList = new ArrayList<>();
+    ArrayList<String> recipientsFirstNameList = new ArrayList<>();
+    ArrayList<String> recipientsLastNameList = new ArrayList<>();
+
     String[] RecipientsPhoneNumbers = new String[100];
     String[] RecipientsFirstNames = new String[100];
     String[] RecipientsLastNames = new String[100];
     String[] RecipientsToApp = new String[100];
     String[] RecipientsToSMS = new String[100];
     ArrayList<String> friendListParse = new ArrayList<>();
+    int NumberToSMS;
+    int NumberToApp;
+
+    RadioButton rb1,rb2,rb3,rb4,rb5;
+    Boolean flag = false;
 
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
@@ -179,14 +189,21 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             /* For Debug */
             //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
             /* For Debug */
-            if(!recipientsList.contains(username)) {
-                RecipientsPhoneNumbers[i]=username;
-                RecipientsFirstNames[i]=firstname;
-                RecipientsLastNames[i]=lastname;
-                recipientsList.add(username);
+            if(!recipientsPhoneList.contains(username)) {
+                //RecipientsPhoneNumbers[i]=username;
+                //RecipientsFirstNames[i]=firstname;
+                //RecipientsLastNames[i]=lastname;
+
+                recipientsPhoneList.add(username);
+                recipientsFirstNameList.add(username);
+                recipientsLastNameList.add(username);
+
                 i++;
+                //System.out.println();
+                //System.out.println("Array: " +RecipientsPhoneNumbers[i]);
             }
         }
+        //System.out.println("List: " +recipientsPhoneList);
     }
 
     public void readFriendFromDB() {
@@ -230,8 +247,75 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         processPhoneNumbers();
         readFriendFromDB();
-        readRecipientsDB();
 
+        rb1 = (RadioButton)findViewById(R.id.time5MinRadioButton);
+        rb2 = (RadioButton)findViewById(R.id.time15MinRadioButton);
+        rb3 = (RadioButton)findViewById(R.id.time30MinRadioButton);
+        rb4 = (RadioButton)findViewById(R.id.time60MinRadioButton);
+        rb5 = (RadioButton)findViewById(R.id.timeOtherRadioButton);
+
+
+        rb1.setOnClickListener(new View.OnClickListener() {         // Radio button for 5min
+            @Override
+            public void onClick(View v) {
+
+
+                    rb2.setChecked(false);
+                    rb3.setChecked(false);
+                    rb4.setChecked(false);
+                    rb5.setChecked(false);
+
+            }
+        });
+
+        rb2.setOnClickListener(new View.OnClickListener() {         // Radio button for 15min
+            @Override
+            public void onClick(View v) {
+
+
+                    rb1.setChecked(false);
+                    rb3.setChecked(false);
+                    rb4.setChecked(false);
+                    rb5.setChecked(false);
+
+            }
+        });
+
+        rb3.setOnClickListener(new View.OnClickListener() {         // Radio button for 30min
+            @Override
+            public void onClick(View v) {
+
+
+                    rb1.setChecked(false);
+                    rb2.setChecked(false);
+                    rb4.setChecked(false);
+                    rb5.setChecked(false);
+
+            }
+        });
+
+        rb4.setOnClickListener(new View.OnClickListener() {         // Radio button for 60min
+            @Override
+            public void onClick(View v) {
+
+
+                    rb1.setChecked(false);
+                    rb2.setChecked(false);
+                    rb3.setChecked(false);
+                    rb5.setChecked(false);
+                                }
+        });
+
+        rb5.setOnClickListener(new View.OnClickListener() {         // Radio button for any time
+            @Override
+            public void onClick(View v) {
+
+                    rb1.setChecked(false);
+                    rb2.setChecked(false);
+                    rb3.setChecked(false);
+                    rb4.setChecked(false);
+            }
+        });
 /*
         phno.toArray(PhoneNumbersArray);
         System.out.println("The Array - ");
@@ -348,14 +432,22 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     }
 
 
+
     public void processRecipients()
     {
-        final int totalNumbers = 100;
+        NumberToApp=0;
+        NumberToSMS=0;
+        final int totalNumbers = recipientsPhoneList.size();
         String[] RecipientsPhoneNumbers_clean = new String[totalNumbers];
         int toAppCounter = 0;
         int toSMSCounter = 0;
+
+        readFriendFromDB();
         for(int i=0;i<totalNumbers;i++)
         {
+            RecipientsPhoneNumbers[i]=recipientsPhoneList.get(0);
+            recipientsPhoneList.remove(0);
+            //System.out.println("RecipientsPhoneNumbers[i]" +RecipientsPhoneNumbers[i]  + " " +i);
 
             //PhoneNumbersArray[i]=phno.get(0);
             //phno.remove(0);
@@ -366,18 +458,24 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 RecipientsPhoneNumbers_clean[i] =
                         RecipientsPhoneNumbers_clean[i].substring(RecipientsPhoneNumbers_clean[i].length() - 10);
             }
-            if(friendListParse.contains(RecipientsPhoneNumbers_clean[i]))
+            boolean friendinParseFlag = friendListParse.contains(RecipientsPhoneNumbers_clean[i]);
+            System.out.println("List-" +friendListParse);
+            System.out.println("Number-" +RecipientsPhoneNumbers_clean[i]);
+            System.out.println("Flag-" +friendinParseFlag);
+            if(friendinParseFlag==true)
             {
-                RecipientsToApp[toAppCounter]="ch"+RecipientsPhoneNumbers_clean[i];
+                RecipientsToApp[toAppCounter]="ch"+ RecipientsPhoneNumbers_clean[i];
+                System.out.println("To App:" +RecipientsToApp[toAppCounter]  + " " +i);
+                NumberToApp++;
                 toAppCounter++;
-                System.out.println("To App:" +RecipientsToApp[toAppCounter]);
 
             }
-            else
+            else if(friendinParseFlag==false)
             {
                 RecipientsToSMS[toSMSCounter]=RecipientsPhoneNumbers[i];
+                System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter] + " " +i);
+                NumberToSMS++;
                 toSMSCounter++;
-                System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter]);
             }
         }
 
@@ -401,7 +499,13 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //-----For Debug-----//
 
         db.insert(friendLocationDB.DATABASE_TABLE, null, newValues);
+    }
 
+
+
+    public void doTesting(View view) {
+        readRecipientsDB();
+        processRecipients();
     }
 
     public void getFromParse()
@@ -486,11 +590,32 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         // Create our Installation query
 
         //JSONObject data = new JSONObject("{\"alert\": \"The Mets scored!\"}");
-
+        readRecipientsDB();
         processRecipients();
 
+
         MessageTopic = messageWritten.getText().toString();
-        MeetTime = " in 15 min";
+
+        if(rb1.isChecked()){
+            MeetTime = " in 5 min";
+        }
+        else if(rb2.isChecked()){
+            MeetTime = " in 15 min";
+        }
+        else if(rb3.isChecked()){
+            MeetTime = " in 30 min";
+        }
+        else if(rb4.isChecked()){
+            MeetTime = " in 60 min";
+        }
+        else if(rb5.isChecked()){
+            MeetTime = " at " + pHour + ":" + pMinute;
+        }
+        else{
+            Toast.makeText(SendInvitesActivity.this,"Please select the time ",Toast.LENGTH_SHORT).show();
+        }
+
+        //MeetTime = " in 15 min";
         MessageToSend = usernamePhone + ": " + MessageTopic + MeetTime;
 
        /*
@@ -503,8 +628,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         System.out.println(data);
         */
 
-        int NumberToApp =  RecipientsToApp.length;
-        int NumberToSMS =  RecipientsToApp.length;
+        System.out.println("App " +NumberToApp +"SMS " +NumberToSMS);
 
         for(int i =0;i<NumberToApp;i++)
         {
@@ -592,7 +716,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                         }
                         */
 
-                        if(distance < 2 && inContactsFlag == true)
+                        if(distance < 5 && inContactsFlag == true)
                         {
                             System.out.println("User In Contacts : " +fusername);
                             saveFriendToSQLite(fusername, friendLat1, friendLng1,
@@ -728,6 +852,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         }
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        System.exit(0);
     }
 
     @Override

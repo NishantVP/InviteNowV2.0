@@ -56,5 +56,8 @@
     <string name="title_activity_view_invites">ViewInvitesActivity</string>
     <string name="title_activity_quick_reply">QuickReplyActivity</string>
     <string name="title_activity_nearby_friends">NearbyFriendsActivity</string>
+    <string name="gps_network_not_enabled">Please Enable GPS</string>
+
+    gps_network_not_enabled
 
 </resources>

@@ -1,9 +1,14 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,6 +51,9 @@ public class startScreenActivity extends ActionBarActivity {
     String EmailID = "UNKNOWN";
     String firstItemId;
 
+    final Context context = this;
+    int LocationOnFlag = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,24 +92,71 @@ public class startScreenActivity extends ActionBarActivity {
         deleteall();
         deleteallRecipients();
 
-        ParseUser.logInInBackground(usernameCheck, passwordCheck, new LogInCallback() {
-            public void done(ParseUser user, ParseException e) {
-                if (user != null) {
-                    // Hooray! The user is logged in.
-                    Toast.makeText(getApplicationContext(), "Login Success",
-                            Toast.LENGTH_SHORT).show();
+        LocationManager lm = null;
+        boolean gps_enabled = false, network_enabled = false;
 
-                    Intent enterSendInvites2 = new Intent(startScreenActivity.this, SendInvitesActivity.class);
-                    startActivity(enterSendInvites2);
+        if(lm == null){
 
-                } else {
-                    // Signup failed. Look at the ParseException to see what happened.
-                    Toast.makeText(getApplicationContext(), passwordCheck,
-                            Toast.LENGTH_SHORT).show();
+            lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        }
+        try{
+
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }catch (Exception e){
+
+        }
+
+        try{
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        }catch (Exception e){
+
+        }
+
+        if(!gps_enabled && !network_enabled){
+            LocationOnFlag =1;
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton("Location Services",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
                 }
-            }
-        });
 
+            });
+
+
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            dialog.show();
+        }
+
+        if(LocationOnFlag==0) {
+            ParseUser.logInInBackground(usernameCheck, passwordCheck, new LogInCallback() {
+                public void done(ParseUser user, ParseException e) {
+                    if (user != null) {
+                        // Hooray! The user is logged in.
+                        Toast.makeText(getApplicationContext(), "Login Success",
+                                Toast.LENGTH_SHORT).show();
+
+                        Intent enterSendInvites2 = new Intent(startScreenActivity.this, SendInvitesActivity.class);
+                        startActivity(enterSendInvites2);
+
+                    } else {
+                        // Signup failed. Look at the ParseException to see what happened.
+                        Toast.makeText(getApplicationContext(), passwordCheck,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
        /* ParseQuery<ParseObject> query = ParseQuery.getQuery("User");
         query.whereEqualTo("username", usernameCheck);
         query.getFirstInBackground(new GetCallback<ParseObject>() {

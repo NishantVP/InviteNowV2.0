@@ -214,6 +214,16 @@
                 android:layout_below="@+id/inviteButton"
                 />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Testing"
+                android:id="@+id/button"
+                android:layout_below="@+id/inviteButton"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:onClick="doTesting"/>
+
         </RelativeLayout>
 
     </RelativeLayout>

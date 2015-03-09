@@ -99,7 +99,7 @@ public class NearbyFriendsActivity extends ActionBarActivity {
         newValues.put(recipientsDB.COLUMN_RECIPIENT_LASTNAME, rlastname);
 
         db.insert(recipientsDB.DATABASE_TABLE, null, newValues);
-        System.out.println("Saved in Recipients Table");
+        System.out.println("Saved in Recipients Table" + rusername);
 
     }
 

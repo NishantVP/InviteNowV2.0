@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,7 +26,10 @@ import android.provider.MediaStore;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
-
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class EditProfileActivity extends ActionBarActivity {
@@ -37,6 +42,10 @@ public class EditProfileActivity extends ActionBarActivity {
     private static final int RESULT_GALLERY =0;
     private static final int CAMERA_PIC_REQUEST =1;
     Bitmap  imageData;
+    File photoFile = null;
+    PhotoDBAdapter dbAdap = new PhotoDBAdapter(this);
+    ImageView image;
+    String imgFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +71,27 @@ public class EditProfileActivity extends ActionBarActivity {
                         @Override
                         public void onClick(DialogInterface arg0, int arg1) {
 
-                                        if(arg1 == 1){
-                                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        startActivityForResult(intent, CAMERA_PIC_REQUEST);
+                            if(arg1 == 1){
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    // Create the File where the photo should go
+
+                                    try {
+
+                                        photoFile = createImageFile();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
+                                    if (photoFile != null) {
+                                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                                        startActivityForResult(takePictureIntent,CAMERA_PIC_REQUEST);
+
+                                    }
+                                    else{
+                                        Toast.makeText(EditProfileActivity.this,"NO PHOTO FILE",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
                                 else if(arg1 == 0){
                                         Intent galleryIntent = new Intent(
                                                         Intent.ACTION_PICK,
@@ -89,18 +115,28 @@ public class EditProfileActivity extends ActionBarActivity {
                 if (requestCode == CAMERA_PIC_REQUEST) {
                         if (resultCode == RESULT_OK) {
 
-                                       imageData = (Bitmap) data.getExtras().get("data");
-                                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
-                                image.setImageBitmap(imageData);
+                            if(photoFile.exists()){
 
-                                        // Compressing the image in Byte Array.
+                                Toast.makeText(EditProfileActivity.this,"File saved at: " +photoFile.getAbsolutePath(),Toast.LENGTH_SHORT).show();
+                                dbAdap.insertData(imgFilePath);
 
-                                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                byte[] byteArray = stream.toByteArray();
+                            }
+                            else{
+                                Toast.makeText(EditProfileActivity.this,"File not saved",Toast.LENGTH_SHORT).show();
+                            }
 
-                                        Intent in1 = new Intent(this, ProfileActivity.class);
-                               in1.putExtra("image",byteArray);
+//                                       imageData = (Bitmap) data.getExtras().get("data");
+//                                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
+//                                image.setImageBitmap(imageData);
+//
+//                                        // Compressing the image in Byte Array.
+//
+//                                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                                byte[] byteArray = stream.toByteArray();
+//
+//                                        Intent in1 = new Intent(this, ProfileActivity.class);
+//                               in1.putExtra("image",byteArray);
 
                                     } else if (resultCode == RESULT_CANCELED){
 
@@ -130,6 +166,24 @@ public class EditProfileActivity extends ActionBarActivity {
                            }
                 }
          }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        Toast.makeText(EditProfileActivity.this,"I am here" ,Toast.LENGTH_SHORT).show();
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        imgFilePath =  image.getAbsolutePath();
+        Toast.makeText(EditProfileActivity.this,"TAKE PICTURES NOW" ,Toast.LENGTH_SHORT).show();
+        return image;
+
+    }
 
     public void saveProfileChanges(View view) {
 
