@@ -499,6 +499,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 System.out.println("To App:" +RecipientsToApp[toAppCounter]  + " " +i);
                 NumberToApp++;
                 toAppCounter++;
+                RecipientsViaApp = RecipientsViaApp + "," +RecipientsToApp[toAppCounter];
 
             }
             else if(friendinParseFlag==false)
@@ -507,6 +508,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter] + " " +i);
                 NumberToSMS++;
                 toSMSCounter++;
+                RecipientsViaSMS = RecipientsToSMS + "," + RecipientsToSMS[toSMSCounter];
             }
         }
         if(NumberToApp!=0 || NumberToSMS !=0)
@@ -922,6 +924,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_send_invites, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume ()
+    {
+        processRecipients();
     }
 
     @Override
