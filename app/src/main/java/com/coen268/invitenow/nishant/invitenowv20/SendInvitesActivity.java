@@ -41,6 +41,8 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.codec.binary.StringUtils;
+
 import android.telephony.SmsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -499,7 +501,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 System.out.println("To App:" +RecipientsToApp[toAppCounter]  + " " +i);
                 NumberToApp++;
                 toAppCounter++;
-                RecipientsViaApp = RecipientsViaApp + "," +RecipientsToApp[toAppCounter];
+                //RecipientsViaApp = RecipientsViaApp + "," +RecipientsToApp[toAppCounter];
 
             }
             else if(friendinParseFlag==false)
@@ -508,13 +510,38 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter] + " " +i);
                 NumberToSMS++;
                 toSMSCounter++;
-                RecipientsViaSMS = RecipientsToSMS + "," + RecipientsToSMS[toSMSCounter];
+                //RecipientsViaSMS = RecipientsToSMS + "," + RecipientsToSMS[toSMSCounter];
             }
         }
         if(NumberToApp!=0 || NumberToSMS !=0)
         {
             invtesSentFlag = 0;
         }
+        /*
+        StringBuilder builder = new StringBuilder();
+        for (String string : RecipientsToApp) {
+            if (builder.length() > 0) {
+                builder.append(",");
+            }
+            builder.append(string);
+        }
+        RecipientsViaApp = builder.toString();
+
+        StringBuilder builder2 = new StringBuilder();
+        for (String string : RecipientsToSMS) {
+            if (builder2.length() > 0) {
+                builder2.append(",");
+            }
+            builder2.append(string);
+        }
+        RecipientsViaApp = builder2.toString();
+        */
+        /*
+        for(int j=0;j<toAppCounter;j++)
+        {
+            RecipientsViaApp = RecipientsToApp[j].
+        }*/
+        //System.out.println("RecipientsViaApp " +RecipientsViaApp);
 
     }
 
@@ -542,6 +569,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     public void doTesting(View view) {
         deleteallRecipients();
+        TestingTextView.setText("Recipients-");
         readRecipientsDB();
         processRecipients();
 
@@ -929,12 +957,41 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     @Override
     protected void onResume ()
     {
+        Toast.makeText(this, "On Resume Called", Toast.LENGTH_SHORT).show();
+        TestingTextView.setText("Recipients-");
         super.onResume();
+        readRecipientsDB();
         processRecipients();
+        /*
         TestingTextView.setText
                 ("Recipients -" +
                 "Via App: " +RecipientsViaApp +"." +
                  "Via SMS: " +RecipientsViaSMS);
+        */
+        String[] RecipientsToApp2 = new String[100];
+        for (int i = 0; i < NumberToApp; i++){
+            RecipientsToApp2[i] = RecipientsToApp[i].substring(RecipientsToApp[i].length() - 10);
+        }
+
+
+        ArrayList<String> list1=new ArrayList<String>(Arrays.asList(RecipientsToApp2));
+        ArrayList<String> list2=new ArrayList<String>(Arrays.asList(RecipientsToSMS));
+        System.out.println("RecipientsViaApp " +list1);
+
+        if(NumberToApp!=0) {
+            TestingTextView.append("\nVia APP: ");
+        }
+        for (int j = 0; j < NumberToApp; j++){
+            TestingTextView.append( " " +list1.get(j));
+        }
+
+        if(NumberToSMS!=0) {
+            TestingTextView.append("\nVia SMS: ");
+        }
+        for (int j = 0; j < NumberToSMS; j++){
+            TestingTextView.append(" " +list2.get(j));
+        }
+
     }
     @Override
     protected void onStop() {
