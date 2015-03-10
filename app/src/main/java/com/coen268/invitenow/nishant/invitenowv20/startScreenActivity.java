@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -46,14 +47,18 @@ public class startScreenActivity extends ActionBarActivity {
     int clickedUserID;
     boolean tableInMemory;
 
-    String ParseUserDataObjID = "UNKNOWN";
-    String Firstname = "UNKNOWN";
-    String Lastname = "UNKNOWN";
-    String EmailID = "UNKNOWN";
+    String ParseUserDataObjID = "ParseObjID";
+    String Firstname = "Welcome";
+    String Lastname = "To InviteNow";
+    String EmailID = "myEmail";
     String firstItemId;
 
     final Context context = this;
     int LocationOnFlag = 0;
+
+    Button LoginButton;
+    Button SignUpButton;
+    TextView LoginProgress;
 
 
     @Override
@@ -78,6 +83,10 @@ public class startScreenActivity extends ActionBarActivity {
 
         username = (EditText)findViewById(R.id.usernameEditText);
         password = (EditText)findViewById(R.id.passwordEditText);
+        LoginButton = (Button)findViewById(R.id.loginButton);
+        SignUpButton = (Button)findViewById(R.id.signUpButton);
+        LoginProgress = (TextView)findViewById(R.id.LoginProgress);
+
 
         /*
         // Enable Local Datastore.
@@ -154,6 +163,19 @@ public class startScreenActivity extends ActionBarActivity {
             dialog.show();
         }
 
+        Boolean NoAutoLogin = false;
+        NoAutoLogin = passwordCheck.contentEquals("samplePassword");
+
+        if(NoAutoLogin==false)
+        {
+            username.setText(usernameCheck);
+            password.setText("******");
+            LoginButton.setEnabled(false);
+            SignUpButton.setEnabled(false);
+            LoginProgress.setText("Please wait ...");
+        }
+
+
         if(LocationOnFlag==0) {
             ParseUser.logInInBackground(usernameCheck, passwordCheck, new LogInCallback() {
                 public void done(ParseUser user, ParseException e) {
@@ -169,6 +191,8 @@ public class startScreenActivity extends ActionBarActivity {
                         // Signup failed. Look at the ParseException to see what happened.
                         Toast.makeText(getApplicationContext(), passwordCheck,
                                 Toast.LENGTH_SHORT).show();
+                        LoginButton.setEnabled(true);
+                        SignUpButton.setEnabled(true);
                     }
                 }
             });
@@ -302,7 +326,8 @@ public class startScreenActivity extends ActionBarActivity {
 
                     //objectId=firstItemId;
                     //status.setText(firstItemId);
-                    saveUserToSQLiteOnLogin(usernameString, passwordString, firstItemId);
+
+                    saveUserToSQLiteOnLogin(usernameString, passwordString, firstItemId,Firstname);
                 } else {
                     Log.d("score", "Error: " + e.getMessage());
                 }
@@ -379,7 +404,7 @@ public class startScreenActivity extends ActionBarActivity {
         Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
     }
 
-    public void saveUserToSQLiteOnLogin(String usernameDB, String passwordDB, String ObjID) {
+    public void saveUserToSQLiteOnLogin(String usernameDB, String passwordDB, String ObjID,String Firstname) {
         SQLiteDatabase db = new userDB(this).getWritableDatabase();
         ContentValues newValues = new ContentValues();
         newValues.put(userDB.COLUMN_USERNAME, usernameDB);
@@ -395,6 +420,7 @@ public class startScreenActivity extends ActionBarActivity {
         //-----For Debug-----//
 
         db.insert(userDB.DATABASE_TABLE, null, newValues);
+        //System.out.println("Firstname : " +Firstname);
         Toast.makeText(getApplicationContext(), "Saved in DataBase Obj" +ObjID , Toast.LENGTH_SHORT).show();
     }
 
@@ -436,10 +462,10 @@ public class startScreenActivity extends ActionBarActivity {
     public void initiateParseUserData()
     {
         final ParseObject UserData = new ParseObject("UserData");
-        UserData.put("FirstName", "unknown");
-        UserData.put("LastName", "unknown");
-        UserData.put("Email", "unknown");
-        UserData.put("UserID", "unknown");
+        UserData.put("FirstName", "Weocome to");
+        UserData.put("LastName", "InviteNow");
+        UserData.put("Email", "email");
+        UserData.put("UserID", "userID");
 
         UserData.saveInBackground(new SaveCallback() {
             @Override

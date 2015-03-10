@@ -118,6 +118,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     TextView TestingTextView;
     int invtesSentFlag =0;
 
+    String RecipientsViaApp;
+    String RecipientsViaSMS;
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -159,6 +161,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 .build();
     }
 
+
+
     private void readFromDB() {
         SQLiteDatabase db = new userDB(this).getWritableDatabase();
 
@@ -169,6 +173,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         objectId = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
         FirstName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_FIRSTNAME));
         LastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
+        System.out.println("Firstname : " +FirstName);
+        //usernameTextView.setText(FirstName);
     }
 
 
@@ -251,6 +257,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         messageWritten = (EditText)findViewById(R.id.meetSubject);
         TestingTextView = (TextView) findViewById(R.id.testingTextView);
+        usernameTextView = (TextView)findViewById(R.id.usersNameTextView);
 
         processPhoneNumbers();
         readFriendFromDB();
@@ -372,6 +379,11 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         pickTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showDialog(TIME_DIALOG_ID);
+
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
             }
         });
 
@@ -391,9 +403,20 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         //getFromParse();
 
         //Log.d("objID :" , objectId);
-        status.setText(objectId);
+        Boolean NoObjID = false;
+        NoObjID = objectId.contentEquals("ParseObjID");
+
+        if(NoObjID==true)
+        {
+            status.setText("");
+        }
+        else
+        {
+            status.setText(usernamePhone);
+        }
+
         //writeUserIDtoParse();
-        usernameTextView = (TextView)findViewById(R.id.usersNameTextView);
+
         usernameTextView.setText(FirstName +" " + LastName);
         writeLocationToParse();
         getNearbyLocationFromParse();
@@ -769,7 +792,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         String LatitudeforTesting = Double.toString(lat);
         String LongitudeforTesting = Double.toString(lng);
-        TestingTextView.setText(LatitudeforTesting +"," +LongitudeforTesting);
+        //TestingTextView.setText(LatitudeforTesting +"," +LongitudeforTesting);
 
     }
 
