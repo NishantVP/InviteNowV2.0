@@ -34,14 +34,15 @@ import java.util.Date;
 
 public class EditProfileActivity extends ActionBarActivity {
 
-    private EditText firstNameEditText,lastNameEditText, emailEditText;
-    private String firstName,lastName, email;
+    private EditText firstNameEditText, lastNameEditText, emailEditText;
+    private String firstName, lastName, email;
     String usernamePhone;
-    String ParseObjID, usernameDB,passwordDB;
+    String getUsernamePhone,getFirstName,getLastName,getEmaill;
+    String ParseObjID, usernameDB, passwordDB;
 
-    private static final int RESULT_GALLERY =0;
-    private static final int CAMERA_PIC_REQUEST =1;
-    Bitmap  imageData;
+    private static final int RESULT_GALLERY = 0;
+    private static final int CAMERA_PIC_REQUEST = 1;
+    Bitmap imageData;
     File photoFile = null;
     PhotoDBAdapter dbAdap = new PhotoDBAdapter(this);
     ImageView image;
@@ -52,120 +53,107 @@ public class EditProfileActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        final CharSequence myList[] = {"Gallery","Camera capture"};
+        final CharSequence myList[] = {"Gallery", "Camera capture"};
         RelativeLayout rl;
-        rl = (RelativeLayout)findViewById(R.id.myRL);
+        rl = (RelativeLayout) findViewById(R.id.myRL);
 
         ImageView uploadPhoto = (ImageView) findViewById(R.id.profilePhotoBigEdit);
         uploadPhoto.setImageResource(R.drawable.uploadpic);
 
-        firstNameEditText = (EditText)findViewById(R.id.FirstName);
-        lastNameEditText = (EditText)findViewById(R.id.LastName);
-        emailEditText = (EditText)findViewById(R.id.EmailID);
+        firstNameEditText = (EditText) findViewById(R.id.FirstName);
+        lastNameEditText = (EditText) findViewById(R.id.LastName);
+        emailEditText = (EditText) findViewById(R.id.EmailID);
 
         readFromDB();
 
+        firstNameEditText.setText(getFirstName);
+        lastNameEditText.setText(getLastName);
+        emailEditText.setText(getEmaill);
+
         final AlertDialog.Builder cusDialog = new AlertDialog.Builder(this);
-                cusDialog.setTitle("Choose from options belows");
-                cusDialog.setSingleChoiceItems(myList,-1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
+        cusDialog.setTitle("Choose from options belows");
+        cusDialog.setSingleChoiceItems(myList, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
 
-                            if(arg1 == 1){
-                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                                    // Create the File where the photo should go
+                if (arg1 == 1) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        // Create the File where the photo should go
 
-                                    try {
+                        try {
 
-                                        photoFile = createImageFile();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    if (photoFile != null) {
-                                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                                        startActivityForResult(takePictureIntent,CAMERA_PIC_REQUEST);
+                            photoFile = createImageFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (photoFile != null) {
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                            startActivityForResult(takePictureIntent, CAMERA_PIC_REQUEST);
 
-                                    }
-                                    else{
-                                        Toast.makeText(EditProfileActivity.this,"NO PHOTO FILE",Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                                else if(arg1 == 0){
-                                        Intent galleryIntent = new Intent(
-                                                        Intent.ACTION_PICK,
-                                                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                        startActivityForResult(galleryIntent , RESULT_GALLERY );
-                                    }
-                            }
-                   });
-
-
-                   uploadPhoto.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                     public void onClick(View v) {
-                     cusDialog.show();
+                        } else {
+                            //Toast.makeText(EditProfileActivity.this, "NO PHOTO FILE", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                });
+                } else if (arg1 == 0) {
+                    Intent galleryIntent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, RESULT_GALLERY);
+                }
+            }
+        });
+
+
+        uploadPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cusDialog.show();
+            }
+        });
 
     }
 
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                if (requestCode == CAMERA_PIC_REQUEST) {
-                        if (resultCode == RESULT_OK) {
+    private void readFromDB() {
+        SQLiteDatabase db = new userDB(this).getWritableDatabase();
 
-                            if(photoFile.exists()){
+        Cursor cursor = db.rawQuery("Select * from  User", null);
+        int number = cursor.getCount();
+        cursor.moveToLast();
+        getUsernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
+        usernamePhone = getUsernamePhone;
+        getEmaill = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_EMAIL));
+        getFirstName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_FIRSTNAME));
+        getLastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
+        passwordDB = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PASSWORD));
+        ParseObjID = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
+        //System.out.println("Firstname : " +FirstName);
+        //usernameTextView.setText(FirstName);
+    }
 
-                                Toast.makeText(EditProfileActivity.this,"File saved at: " +photoFile.getAbsolutePath(),Toast.LENGTH_SHORT).show();
-                                dbAdap.insertData(imgFilePath);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PIC_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                if (photoFile.exists()) {
+                    Toast.makeText(EditProfileActivity.this, "File saved at: " + photoFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                    dbAdap.insertData(imgFilePath);
 
-                            }
-                            else{
-                                Toast.makeText(EditProfileActivity.this,"File not saved",Toast.LENGTH_SHORT).show();
-                            }
-
-//                                       imageData = (Bitmap) data.getExtras().get("data");
-//                                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
-//                                image.setImageBitmap(imageData);
-//
-//                                        // Compressing the image in Byte Array.
-//
-//                                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                                byte[] byteArray = stream.toByteArray();
-//
-//                                        Intent in1 = new Intent(this, ProfileActivity.class);
-//                               in1.putExtra("image",byteArray);
-
-                                    } else if (resultCode == RESULT_CANCELED){
-
-                                        Toast.makeText(EditProfileActivity.this,"Profile picture update cancelled",Toast.LENGTH_SHORT).show();
-                            }
-
-                            }
-                else if (requestCode == RESULT_GALLERY){
-                        if (resultCode == RESULT_OK) {
-
-                             /*           imageData = (Bitmap) data.getExtras().get("data");
-+                ImageView image = (ImageView) findViewById(R.id.profilePhotoBigEdit);
-+                image.setImageBitmap(imageData);
-+
-+                // Compressing the image in Byte Array.
-+
-+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-+                imageData.compress(Bitmap.CompressFormat.PNG, 100, stream);
-+                byte[] byteArray = stream.toByteArray();
-+
-+                Intent in1 = new Intent(this, ProfileActivity.class);
-+                in1.putExtra("image",byteArray); */
-
-                                                   } else if (resultCode == RESULT_CANCELED){
-
-                   Toast.makeText(EditProfileActivity.this,"Profile picture update cancelled",Toast.LENGTH_SHORT).show();
-                           }
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "File not saved", Toast.LENGTH_SHORT).show();
                 }
-         }
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(EditProfileActivity.this, "Profile picture update cancelled", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (requestCode == RESULT_GALLERY) {
+            if (resultCode == RESULT_OK) {
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(EditProfileActivity.this, "Profile picture update cancelled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -173,14 +161,14 @@ public class EditProfileActivity extends ActionBarActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        Toast.makeText(EditProfileActivity.this,"I am here" ,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(EditProfileActivity.this, "I am here", Toast.LENGTH_SHORT).show();
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-        imgFilePath =  image.getAbsolutePath();
-        Toast.makeText(EditProfileActivity.this,"TAKE PICTURES NOW" ,Toast.LENGTH_SHORT).show();
+        imgFilePath = image.getAbsolutePath();
+        Toast.makeText(EditProfileActivity.this, "Take Picture", Toast.LENGTH_SHORT).show();
         return image;
 
     }
@@ -192,26 +180,14 @@ public class EditProfileActivity extends ActionBarActivity {
         email = emailEditText.getText().toString();
 
 
-        if(firstName == null || lastName ==null || email ==null){
+        if (firstName == null || lastName == null || email == null) {
 
 
-            Toast.makeText(getApplicationContext(), "Enter Information in Text",
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Enter Information in Text",
+              //      Toast.LENGTH_SHORT).show();
 
 
-            /*
-            ParseObject InviteTopic = new ParseObject("UserDetails");
-            InviteTopic.put("FirstName", firstName);
-            InviteTopic.put("LastName", lastName);
-            InviteTopic.put("Email", email);
-            InviteTopic.put("UserID", usernamePhone);
-            InviteTopic.saveInBackground();
-
-            saveUserInfoToSQLite();
-            */
-
-        }
-        else{
+        } else {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
             // Retrieve the object by id
             query.getInBackground(ParseObjID, new GetCallback<ParseObject>() {
@@ -232,8 +208,8 @@ public class EditProfileActivity extends ActionBarActivity {
             Intent enterSendInvites = new Intent(this, SendInvitesActivity.class);
             startActivity(enterSendInvites);
 
-            Toast.makeText(getApplicationContext(), ParseObjID,
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), ParseObjID,
+              //      Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -247,28 +223,11 @@ public class EditProfileActivity extends ActionBarActivity {
         newValues.put(userDB.COLUMN_USERNAME, usernamePhone);
         newValues.put(userDB.COLUMN_PASSWORD, passwordDB);
         newValues.put(userDB.COLUMN_PARSE_OBJECT_ID, ParseObjID);
-
-
-        //-----For Debug-----//
-        // newValues.put(NotesDB.NAME_COLUMN, path);
-        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
-        //-----For Debug-----//
-
         db.insert(userDB.DATABASE_TABLE, null, newValues);
-        Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
     }
 
-    private void readFromDB() {
-        SQLiteDatabase db = new userDB(this).getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("Select * from  User", null);
-        int number = cursor.getCount();
-        cursor.moveToLast();
-        usernamePhone = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
-        passwordDB = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PASSWORD));
-        ParseObjID = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -287,7 +246,6 @@ public class EditProfileActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

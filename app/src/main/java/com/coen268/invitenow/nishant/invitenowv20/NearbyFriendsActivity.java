@@ -53,40 +53,9 @@ public class NearbyFriendsActivity extends ActionBarActivity {
 
                 saveRecipientToSQLite(phoneNumbers[p],FirstNames[p],LastNames[p]);
 
-                /*
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNumbers[p],null,message,null,null);
-                Toast.makeText(NearbyFriendsActivity.this, "message sent to: " + phoneNumbers[p],
-                        Toast.LENGTH_SHORT).show();
-
-                Intent viewNote = new Intent(NearbyFriendsActivity.this, SendInvitesActivity.class);
-                viewNote.putExtra("NoteID", p);
-                startActivity(viewNote);
-                */
-
-
             }
         });
-     /*
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        String jsonData = extras.getString( "com.parse.Data" );
-        System.out.println(jsonData);
 
-        String message = "Not Known";
-        try {
-
-            JSONObject obj = new JSONObject(jsonData);
-
-            Log.d("My App", obj.toString());
-            message = obj.getString("alert");
-
-        } catch (Throwable t) {
-            Log.e("My App", "Could not parse malformed JSON: \"" + jsonData + "\"");
-        }
-
-        System.out.println(message);
-     */
     }
 
     public void saveRecipientToSQLite(String rusername,
@@ -99,7 +68,7 @@ public class NearbyFriendsActivity extends ActionBarActivity {
         newValues.put(recipientsDB.COLUMN_RECIPIENT_LASTNAME, rlastname);
 
         db.insert(recipientsDB.DATABASE_TABLE, null, newValues);
-        System.out.println("Saved in Recipients Table" + rusername);
+        //System.out.println("Saved in Recipients Table" + rusername);
 
     }
 
@@ -136,9 +105,6 @@ public class NearbyFriendsActivity extends ActionBarActivity {
             String username = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_USERNAME));
             String firstname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_FIRSTNAME));
             String lastname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LASTNAME));
-            /* For Debug */
-            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
-            /* For Debug */
             if(!friendList.contains(username)) {
                 phoneNumbers[i]=username;
                 FirstNames[i]=firstname;

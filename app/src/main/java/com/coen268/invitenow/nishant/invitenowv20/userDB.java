@@ -26,21 +26,6 @@ public class userDB extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + DATABASE_TABLE;
 
-
-    /*
-    private static final String DATABASE_CREATE = String.format(
-            "CREATE TABLE %s (" +
-                    "  %s integer primary key autoincrement, " + " %s text,"+
-                    "  %s text," + " %s text," + " %s text,"+ " %s text,"+
-                    "  %s text)",
-            DATABASE_TABLE, COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD,COLUMN_PARSE_OBJECT_ID,
-            COLUMN_FIRSTNAME,COLUMN_LASTNAME,COLUMN_EMAIL );
-    */
-
-   /* private static final String DATABASE_CREATE = "create table "
-            + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_COMMENT
-            + " text not null);";
-*/
     private static final String DATABASE_CREATE = "CREATE TABLE "
             + DATABASE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_USERNAME
             + " TEXT," + COLUMN_PASSWORD + " TEXT," + COLUMN_PARSE_OBJECT_ID + " TEXT,"

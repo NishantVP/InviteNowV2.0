@@ -54,7 +54,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
-                    Toast.makeText(getApplicationContext(),"Click ListItem Number " + position, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(),"Click ListItem Number " + position, Toast.LENGTH_LONG).show();
                 }
             });
         }catch (Exception e){
@@ -114,7 +114,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
 
                 // Check the edittext is empty or not
                 if(s1.equals("")){
-                    Toast.makeText(SelectFromGroupsActivity.this, "Please Enter Any Text", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SelectFromGroupsActivity.this, "Please Enter Any Text", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -124,11 +124,11 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
                 Log.d("**** Here Counts: ", " **" +grpCursor.getCount());
 
                 if(grpCursor.getCount()>0){
-                    Toast.makeText(SelectFromGroupsActivity.this,"Group is already present",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SelectFromGroupsActivity.this,"Group is already present",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 else{
-                    Toast.makeText(SelectFromGroupsActivity.this,"Not available",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SelectFromGroupsActivity.this,"Not available",Toast.LENGTH_SHORT).show();
 
                     try{
                         ContentValues groupValues;
@@ -141,7 +141,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
                     }catch (Exception e){
                         Log.d("***** Exception : ", " " +e.getMessage());
                     }
-                    Toast.makeText(SelectFromGroupsActivity.this,"Created Successfully",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SelectFromGroupsActivity.this,"Created Successfully",Toast.LENGTH_SHORT).show();
                 }
 
                 grpCursor.close();
@@ -173,7 +173,7 @@ public class SelectFromGroupsActivity extends ActionBarActivity {
 
                         String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         Log.d("***** Contact Added : "," *: " +name);
-                        Toast.makeText(SelectFromGroupsActivity.this,name+ "added successfully", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(SelectFromGroupsActivity.this,name+ "added successfully", Toast.LENGTH_SHORT).show();
 
                     }
                 }

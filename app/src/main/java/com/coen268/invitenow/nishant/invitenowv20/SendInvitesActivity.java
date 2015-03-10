@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -47,6 +49,7 @@ import android.telephony.SmsManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -89,9 +92,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     String fusername= "6692378282";
     String chanelsubNumber;
 
-    String read_Friend_lat1,read_Friend_lng1,read_Friend_username;
-    Double read_Friend_lat,read_Friend_lng;
-
     String MessageToSend;
     String MessageTopic;
     String MeetTime;
@@ -106,8 +106,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     ArrayList<String> recipientsLastNameList = new ArrayList<>();
 
     String[] RecipientsPhoneNumbers = new String[100];
-    String[] RecipientsFirstNames = new String[100];
-    String[] RecipientsLastNames = new String[100];
     String[] RecipientsToApp = new String[100];
     String[] RecipientsToSMS = new String[100];
     ArrayList<String> friendListParse = new ArrayList<>();
@@ -120,8 +118,9 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     TextView TestingTextView;
     int invtesSentFlag =0;
 
-    String RecipientsViaApp;
-    String RecipientsViaSMS;
+    String filepath;
+    ImageView usersPhoto;
+    File imgFile;
 
     private TimePickerDialog.OnTimeSetListener mTimeSetListener =
             new TimePickerDialog.OnTimeSetListener() {
@@ -175,7 +174,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         objectId = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PARSE_OBJECT_ID));
         FirstName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_FIRSTNAME));
         LastName = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_LASTNAME));
-        System.out.println("Firstname : " +FirstName);
+        //System.out.println("Firstname : " +FirstName);
         //usernameTextView.setText(FirstName);
     }
 
@@ -200,9 +199,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             String username = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_USERNAME));
             String firstname = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_FIRSTNAME));
             String lastname = cursor.getString(cursor.getColumnIndex(recipientsDB.COLUMN_RECIPIENT_LASTNAME));
-            /* For Debug */
-            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
-            /* For Debug */
+
             if(!recipientsPhoneList.contains(username)) {
                 //RecipientsPhoneNumbers[i]=username;
                 //RecipientsFirstNames[i]=firstname;
@@ -242,9 +239,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             String username = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_USERNAME));
             String firstname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_FIRSTNAME));
             String lastname = cursor.getString(cursor.getColumnIndex(friendLocationDB.COLUMN_FRIEND_LASTNAME));
-            /* For Debug */
-            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
-            /* For Debug */
+
             if(!friendListParse.contains(username)) {
                 friendListParse.add(username);
                 i++;
@@ -281,10 +276,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             public void onClick(View v) {
 
 
-                    rb2.setChecked(false);
-                    rb3.setChecked(false);
-                    rb4.setChecked(false);
-                    rb5.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
 
             }
         });
@@ -294,10 +289,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             public void onClick(View v) {
 
 
-                    rb1.setChecked(false);
-                    rb3.setChecked(false);
-                    rb4.setChecked(false);
-                    rb5.setChecked(false);
+                rb1.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
 
             }
         });
@@ -307,10 +302,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             public void onClick(View v) {
 
 
-                    rb1.setChecked(false);
-                    rb2.setChecked(false);
-                    rb4.setChecked(false);
-                    rb5.setChecked(false);
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb4.setChecked(false);
+                rb5.setChecked(false);
 
             }
         });
@@ -320,54 +315,43 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             public void onClick(View v) {
 
 
-                    rb1.setChecked(false);
-                    rb2.setChecked(false);
-                    rb3.setChecked(false);
-                    rb5.setChecked(false);
-                                }
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb5.setChecked(false);
+            }
         });
 
         rb5.setOnClickListener(new View.OnClickListener() {         // Radio button for any time
             @Override
             public void onClick(View v) {
 
-                    rb1.setChecked(false);
-                    rb2.setChecked(false);
-                    rb3.setChecked(false);
-                    rb4.setChecked(false);
+                rb1.setChecked(false);
+                rb2.setChecked(false);
+                rb3.setChecked(false);
+                rb4.setChecked(false);
             }
         });
-/*
-        phno.toArray(PhoneNumbersArray);
-        System.out.println("The Array - ");
-        System.out.println(PhoneNumbersArray);
-*/
-/*
-        Parse.enableLocalDatastore(getApplicationContext());
-        Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
-                "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
-*/
-        /* Set User's Photo in Profile bar at top */
 
-        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        // Define the criteria how to select the locatioin provider -> use
-        // default
-        //Criteria criteria = new Criteria();
-        //provider = locationManager.getBestProvider(criteria, false);
-        //location = locationManager.getLastKnownLocation(provider);
-
-        // Initialize the location fields
-        /*if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
-            onLocationChanged(location);
-        }
-        else {
-            System.out.println("Location not available");
-        }
-        */
-
-        ImageView usersPhoto = (ImageView) findViewById(R.id.usersPhotoImageView);
+        usersPhoto = (ImageView) findViewById(R.id.usersPhotoImageView);
         usersPhoto.setImageResource(R.drawable.panda);
+
+        SQLiteDatabase db = new PhotoDB(this).getWritableDatabase();
+        String[] result = {PhotoDB.UID,PhotoDB.PIC_FILEPATH};
+
+        Cursor cursor = db.query(PhotoDB.TABLE_NAME,result,null,null,null,null,null);
+
+        int numb = cursor.getCount();
+        if(numb <= 0){
+
+            usersPhoto.setImageResource(R.drawable.panda);
+        }
+        else{
+            cursor.moveToLast();
+            filepath = cursor.getString(1);
+            imageLoad();
+        }
+
 
         ImageView usersAvailabilityColor = (ImageView) findViewById(R.id.usersAvailabilityStatusColor);
         usersAvailabilityColor.setImageResource(R.drawable.green);
@@ -397,7 +381,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         /* Get text from edit text*/
         topic = (EditText) findViewById(R.id.meetSubject);
         topic1= topic.getText().toString();
-       // status.setText(topic1);
+        // status.setText(topic1);
         parseTest = 2.55;
 
         readFromDB();
@@ -425,7 +409,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         /*Write channel for subscription*/
         chanelsubNumber = "ch"+usernamePhone;
-        System.out.println(chanelsubNumber);
+        //System.out.println(chanelsubNumber);
         ParsePush.subscribeInBackground(chanelsubNumber, new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -436,6 +420,19 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 }
             }
         });
+    }
+
+
+    public void imageLoad(){
+
+        //Toast.makeText(SendInvitesActivity.this,"Path:" +filepath,Toast.LENGTH_SHORT).show();
+        imgFile = new File(filepath);
+        String str= imgFile.getAbsolutePath();
+        Log.d("***** error***",str);
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inSampleSize = 5;
+        Bitmap bitmap = BitmapFactory.decodeFile(str);
+        usersPhoto.setImageBitmap(bitmap);
     }
 
     public void processPhoneNumbers()
@@ -459,8 +456,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         }
         PhoneNumbersProcessed = Arrays.asList(PhoneNumbersArray);
-        System.out.println(totalNumbers);
-        System.out.println(PhoneNumbersProcessed.get(PhoneNumbersProcessed.size()-1));
+        //System.out.println(totalNumbers);
+        //System.out.println(PhoneNumbersProcessed.get(PhoneNumbersProcessed.size()-1));
 
     }
 
@@ -480,10 +477,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         {
             RecipientsPhoneNumbers[i]=recipientsPhoneList.get(0);
             recipientsPhoneList.remove(0);
-            //System.out.println("RecipientsPhoneNumbers[i]" +RecipientsPhoneNumbers[i]  + " " +i);
 
-            //PhoneNumbersArray[i]=phno.get(0);
-            //phno.remove(0);
             RecipientsPhoneNumbers_clean[i]=RecipientsPhoneNumbers[i].replaceAll("\\W","");
 
             if(RecipientsPhoneNumbers_clean[i].length()>10)
@@ -492,13 +486,13 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                         RecipientsPhoneNumbers_clean[i].substring(RecipientsPhoneNumbers_clean[i].length() - 10);
             }
             boolean friendinParseFlag = friendListParse.contains(RecipientsPhoneNumbers_clean[i]);
-            System.out.println("List-" +friendListParse);
-            System.out.println("Number-" +RecipientsPhoneNumbers_clean[i]);
-            System.out.println("Flag-" +friendinParseFlag);
+            //System.out.println("List-" +friendListParse);
+            //System.out.println("Number-" +RecipientsPhoneNumbers_clean[i]);
+            //System.out.println("Flag-" +friendinParseFlag);
             if(friendinParseFlag==true)
             {
                 RecipientsToApp[toAppCounter]="ch"+ RecipientsPhoneNumbers_clean[i];
-                System.out.println("To App:" +RecipientsToApp[toAppCounter]  + " " +i);
+                //System.out.println("To App:" +RecipientsToApp[toAppCounter]  + " " +i);
                 NumberToApp++;
                 toAppCounter++;
                 //RecipientsViaApp = RecipientsViaApp + "," +RecipientsToApp[toAppCounter];
@@ -507,7 +501,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             else if(friendinParseFlag==false)
             {
                 RecipientsToSMS[toSMSCounter]=RecipientsPhoneNumbers[i];
-                System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter] + " " +i);
+                //System.out.println("To SMS:" +RecipientsToSMS[toSMSCounter] + " " +i);
                 NumberToSMS++;
                 toSMSCounter++;
                 //RecipientsViaSMS = RecipientsToSMS + "," + RecipientsToSMS[toSMSCounter];
@@ -517,31 +511,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         {
             invtesSentFlag = 0;
         }
-        /*
-        StringBuilder builder = new StringBuilder();
-        for (String string : RecipientsToApp) {
-            if (builder.length() > 0) {
-                builder.append(",");
-            }
-            builder.append(string);
-        }
-        RecipientsViaApp = builder.toString();
-
-        StringBuilder builder2 = new StringBuilder();
-        for (String string : RecipientsToSMS) {
-            if (builder2.length() > 0) {
-                builder2.append(",");
-            }
-            builder2.append(string);
-        }
-        RecipientsViaApp = builder2.toString();
-        */
-        /*
-        for(int j=0;j<toAppCounter;j++)
-        {
-            RecipientsViaApp = RecipientsToApp[j].
-        }*/
-        //System.out.println("RecipientsViaApp " +RecipientsViaApp);
 
     }
 
@@ -556,11 +525,6 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         newValues.put(friendLocationDB.COLUMN_FRIEND_FIRSTNAME, ffirstname);
         newValues.put(friendLocationDB.COLUMN_FRIEND_LASTNAME, flastname);
         newValues.put(friendLocationDB.COLUMN_FRIEND_EMAIL, femail);
-
-        //-----For Debug-----//
-        // newValues.put(NotesDB.NAME_COLUMN, path);
-        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
-        //-----For Debug-----//
 
         db.insert(friendLocationDB.DATABASE_TABLE, null, newValues);
     }
@@ -592,36 +556,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             }
         });
 
-        /*
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-        query.whereEqualTo("UserID", "4085655184");
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-        /*    public void done(ParseObject oResult, ParseException e) {
-                if (e==null) {
-                    // Object is Successfully Retrieved
-                    objectId = oResult.getString("FirstName");
-                } else {
-                    // Problem with Retrieve
-                    e.printStackTrace();
-                }
-            }
-        });*/
-        /*
-            public void done(ParseObject object, ParseException e) {
-                if (object == null) {
-                    Log.d("score 1", "The getFirst request failed.");
-                }
-                else {
-                    objectId = "Nishan";
-                    Log.d("score 1", "Retrieved the object.");
 
-                    //Firstname = object.getString("FirstName");
-                    //Lastname = object.getString("LastName");
-                    //EmailID = object.getString("Email");
-                }
-            }
-        });
-        */
     }
 
     public void onLocationChanged(Location location) {
@@ -631,28 +566,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
     public void inviteButtonClicked(View view)
     {
-        /*
-        // Enable Local Datastore.
-        final ParseObject InviteTopic = new ParseObject("InviteTopic");
-        InviteTopic.put("Lat", lat);
-        InviteTopic.put("Lng", lng);
-        InviteTopic.put("UserID", usernamePhone);
-        InviteTopic.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                // Now you can do whatever you want with the object ID, like save it in a variable
-               // objectId = InviteTopic.getObjectId();
-            }
-        });
-        //getNearbyLocationFromParse();
-        readFriendDB();
-
-        System.out.println("FLat " +read_Friend_lat);
-        System.out.println("FLgn " +read_Friend_lng);
-
-       // InviteTopic.saveInBackground();
-        //status.setText(objectId);
-        */
+        int messageSavedFlag = 0;
 
         // Create our Installation query
 
@@ -679,7 +593,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             MeetTime = " at " + pHour + ":" + pMinute;
         }
         else{
-            Toast.makeText(SendInvitesActivity.this,"Please select the time ",Toast.LENGTH_SHORT).show();
+            MeetTime=" ";
+            //Toast.makeText(SendInvitesActivity.this,"Please select the time ",Toast.LENGTH_SHORT).show();
         }
 
         //MeetTime = " in 15 min";
@@ -695,7 +610,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         System.out.println(data);
         */
 
-        System.out.println("App " +NumberToApp +"SMS " +NumberToSMS);
+        //System.out.println("App " +NumberToApp +"SMS " +NumberToSMS);
 
         String sentToastToApp = Integer.toString(NumberToApp);
         String sentToastToSMS = Integer.toString(NumberToSMS);
@@ -712,7 +627,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         }
 
         int i;
-        if(invtesSentFlag==0) {
+        if(invtesSentFlag==0)
+        {
             for (i = 0; i < NumberToApp; i++) {
 
                 ParseQuery pushQuery = ParseInstallation.getQuery();
@@ -727,23 +643,25 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 push.sendInBackground();
             }
             if (i == NumberToApp && i!=0) {
-                Toast.makeText(this, "Sending.." + sentToastToApp + " via App", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sending.. " + sentToastToApp + " via App", Toast.LENGTH_SHORT).show();
                 NumberToApp = 0;
+                if(messageSavedFlag==0)
+                {
+                    saveMessageToSQLite(MessageToSend);
+                    messageSavedFlag=1;
+                }
             }
+            TestingTextView.setText("Recipients-");
         }
 
-        /*
-        for(int i =0;i<NumberToSMS;i++)
-        {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(RecipientsToSMS[i],null,MessageToSend,null,null);
-            //Toast.makeText(NearbyFriendsActivity.this, "message sent to: " + phoneNumbers[p],
-             //       Toast.LENGTH_SHORT).show();
-
-        }
-        */
 
         if(NumberToSMS>0) {
+
+            if(messageSavedFlag==0)
+            {
+                saveMessageToSQLite(MessageToSend);
+                messageSavedFlag=1;
+            }
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             final String sentToastToSMSdialog = Integer.toString(NumberToSMS);
             dialog.setMessage(sentToastToSMSdialog +" invitations will be sent by SMS");
@@ -752,6 +670,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 public void onClick(DialogInterface dialog, int which) {
                     int i;
                     if(invtesSentFlag==0) {
+
                         for (i = 0; i < NumberToSMS; i++) {
                             SmsManager smsManager = SmsManager.getDefault();
                             smsManager.sendTextMessage(RecipientsToSMS[i], null, MessageToSend, null, null);
@@ -761,9 +680,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                         }
 
                         if (i == NumberToSMS && i !=0) {
-                            Toast.makeText(SendInvitesActivity.this, "Sending.."
+                            Toast.makeText(SendInvitesActivity.this, "Sending.. "
                                     + sentToastToSMSdialog + " via SMS", Toast.LENGTH_SHORT).show();
                             NumberToSMS = 0;
+
                         }
                         deleteallRecipients();
                     }
@@ -776,6 +696,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                 public void onClick(DialogInterface dialog, int which) {
                     NumberToSMS = 0;
                     deleteallRecipients();
+                    Toast.makeText(SendInvitesActivity.this, "SMS not sent", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 }
             });
@@ -783,18 +704,25 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             dialog.show();
 
         }
-        System.out.println("Number to SMS" +NumberToSMS);
+        //System.out.println("Number to SMS" +NumberToSMS);
 
         if(NumberToSMS==0)
         {
-            System.out.println("Recipients Deleted");
+            //System.out.println("Recipients Deleted");
             invtesSentFlag=1;
             deleteallRecipients();
         }
 
+    }
 
-        //Toast.makeText(this, "Sending.." +sentToastToApp +" via App" +
-          //                              sentToastToSMS +" via SMS", Toast.LENGTH_SHORT).show();
+
+    public void saveMessageToSQLite(String message) {
+
+        SQLiteDatabase db = new invitesDB(this).getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put(invitesDB.COLUMN_MESSAGE, message);
+
+        db.insert(invitesDB.DATABASE_TABLE, null, newValues);
 
     }
 
@@ -817,7 +745,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
                     }
                 }
             });
-            Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
         }
 
         String LatitudeforTesting = Double.toString(lat);
@@ -846,33 +774,23 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
                         String friendLat1 = Double.toString(friendLat);
                         String friendLng1 = Double.toString(friendLng);
-                        //firstItemId = FriendList.get(0).getObjectId();
-                        //objectId=firstItemId;
-                        //status.setText(firstItemId);
-                        //System.out.println("FLat " +friendLat);
-                        //System.out.println("FLgn " +friendLng);
+
                         double latDiff =  Math.abs (friendLat - lat);
                         double lngDiff =  Math.abs (friendLng - lng);
                         double distance = 1000*(latDiff+lngDiff);
 
                         boolean inContactsFlag = PhoneNumbersProcessed.contains(fusername);
 
-                        /*
-                        if(distance < 2)
-                        {
-                            System.out.println("All Nearby : " +fusername);
-                        }
-                        */
 
                         if(distance < 5 && inContactsFlag == true)
                         {
-                            System.out.println("User In Contacts : " +fusername);
+                            //System.out.println("User In Contacts : " +fusername);
                             saveFriendToSQLite(fusername, friendLat1, friendLng1,
                             ffirstname, flastname, femail);
                         }
                     }
 
-                    Toast.makeText(getApplicationContext(), "Friend Saved", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Friend Saved", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.d("score", "Error: " + e.getMessage());
@@ -880,25 +798,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
             }
         });
 
-        /*
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-        // Retrieve the object by id
-        query.getInBackground(objectId, new GetCallback<ParseObject>() {
-            public void done(ParseObject UserData, ParseException e) {
-                if (e == null) {
-                    // Now let's update it with some new data. In this case, only cheatMode and score
-                    // will get sent to the Parse Cloud. playerName hasn't changed.
-                    UserData.put("Lat", lat);
-                    UserData.put("Lng", lng);
-                    //UserData.put("LastName", lastName);
-                    //UserData.put("Email", email);
-                    UserData.saveInBackground();
 
-                }
-            }
-        });
-        Toast.makeText(this, "location written", Toast.LENGTH_SHORT).show();
-        */
     }
 
     private void getAllContacts(ContentResolver contentResolver) {
@@ -908,12 +808,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         while(cursor.moveToNext()){
             String name1 = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            Toast.makeText(SendInvitesActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
-            /*if(!name.contains(name1)){
+            //Toast.makeText(SendInvitesActivity.this,"Phone number:"+phn,Toast.LENGTH_SHORT);
 
-                name.add(name1);
-                phno.add(phn);
-            }*/
             if(!phno.contains(phn)){
 
                 name.add(name1);
@@ -957,17 +853,12 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     @Override
     protected void onResume ()
     {
-        Toast.makeText(this, "On Resume Called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "On Resume Called", Toast.LENGTH_SHORT).show();
         TestingTextView.setText("Recipients-");
         super.onResume();
         readRecipientsDB();
         processRecipients();
-        /*
-        TestingTextView.setText
-                ("Recipients -" +
-                "Via App: " +RecipientsViaApp +"." +
-                 "Via SMS: " +RecipientsViaSMS);
-        */
+
         String[] RecipientsToApp2 = new String[100];
         for (int i = 0; i < NumberToApp; i++){
             RecipientsToApp2[i] = RecipientsToApp[i].substring(RecipientsToApp[i].length() - 10);
@@ -976,7 +867,8 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         ArrayList<String> list1=new ArrayList<String>(Arrays.asList(RecipientsToApp2));
         ArrayList<String> list2=new ArrayList<String>(Arrays.asList(RecipientsToSMS));
-        System.out.println("RecipientsViaApp " +list1);
+
+        //System.out.println("RecipientsViaApp " +list1);
 
         if(NumberToApp!=0) {
             TestingTextView.append("\nVia APP: ");
@@ -1045,10 +937,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     }
 
 
-    public void enterProfile(View view) {
+    public void enterEditProfile(View view) {
         getNearbyLocationFromParse();
-        Intent enterProfile = new Intent(this, ProfileActivity.class);
-        startActivity(enterProfile);
+        Intent enterEditProfile = new Intent(this, EditProfileActivity.class);
+        startActivity(enterEditProfile);
     }
 
 
@@ -1057,10 +949,10 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            Toast.makeText(this, "location taken", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "location taken", Toast.LENGTH_SHORT).show();
             lat = (double) (mLastLocation.getLatitude());
             lng = (double) (mLastLocation.getLongitude());
-            Toast.makeText(this, "Connected to Google", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Connected to Google", Toast.LENGTH_SHORT).show();
             writeLocationToParse();
 
         }

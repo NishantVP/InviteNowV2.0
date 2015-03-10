@@ -41,7 +41,7 @@ public class Receiver extends ParsePushBroadcastReceiver {
     {
         Bundle extras = intent.getExtras();
         String jsonData = extras.getString( "com.parse.Data" );
-        System.out.println(jsonData);
+        //System.out.println(jsonData);
 
         message= "Not Known";
         try {
@@ -56,12 +56,14 @@ public class Receiver extends ParsePushBroadcastReceiver {
         }
 
         if(message!="Not Known") {
-            System.out.println(message);
+           // System.out.println(message);
             //saveMessageToSQLite(message);
             sender = message.substring(0,Math.min(message.length(),10));
             senderChannel = "ch"+sender;
 
-            Toast.makeText(context, "Message: " +message +" Not saved" , Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Message: " +message +" Not saved" , Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Response sent: Busy " , Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Invitation not saved " , Toast.LENGTH_LONG).show();
             NegativeReply();
         }
 
@@ -77,7 +79,7 @@ public class Receiver extends ParsePushBroadcastReceiver {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(data);
+       // System.out.println(data);
 
         ParseQuery pushQuery = ParseInstallation.getQuery();
         pushQuery.whereEqualTo("channels", senderChannel);

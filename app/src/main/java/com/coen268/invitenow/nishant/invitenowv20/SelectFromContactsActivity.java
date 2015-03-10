@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,8 @@ public class SelectFromContactsActivity extends ActionBarActivity {
     List<String> phno = new ArrayList<String>();
     MyAdapter myAdapter;
     Button select;
+    EditText inputSearch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,40 +56,41 @@ public class SelectFromContactsActivity extends ActionBarActivity {
 
         select = (Button)findViewById(R.id.button1);
 
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                StringBuilder checkedcontacts = new StringBuilder();
-                String PhoneNumber;
-                String Name;
 
-                for(int i =0 ; i < name.size();i++){
+                select.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                    if(myAdapter.myCheckStates.get(i)== true) {
-                        //checkedcontacts.append(name.get(i).toString());
-                        //checkedcontacts.append("\n");
-                        checkedcontacts.append(phno.get(i).toString());
-                        checkedcontacts.append("\n");
-                        PhoneNumber = phno.get(i).toString();
-                        Name = name.get(i).toString();
-                        saveRecipientToSQLite(PhoneNumber,Name,"");
+                        StringBuilder checkedcontacts = new StringBuilder();
+                        String PhoneNumber;
+                        String Name;
+
+                        for (int i = 0; i < name.size(); i++) {
+
+                            if (myAdapter.myCheckStates.get(i) == true) {
+                                //checkedcontacts.append(name.get(i).toString());
+                                //checkedcontacts.append("\n");
+                                checkedcontacts.append(phno.get(i).toString());
+                                checkedcontacts.append("\n");
+                                PhoneNumber = phno.get(i).toString();
+                                Name = name.get(i).toString();
+                                saveRecipientToSQLite(PhoneNumber, Name, "");
+                            } else {
+                                //System.out.println("Not Checked......"+name.get(i).toString());
+                            }
+                        }
+                        //Toast.makeText(SelectFromContactsActivity.this,checkedcontacts,Toast.LENGTH_SHORT).show();
+                        String dfq = checkedcontacts.toString();
+
+                        //Toast.makeText(SelectFromContactsActivity.this, dfq, Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(SelectFromContactsActivity.this, SendInvitesActivity.class);
+                        intent.putExtra("abc", checkedcontacts.toString());
+                        startActivity(intent);
+
                     }
-                    else{
-                        //System.out.println("Not Checked......"+name.get(i).toString());
-                    }
-                }
-                //Toast.makeText(SelectFromContactsActivity.this,checkedcontacts,Toast.LENGTH_SHORT).show();
-                String dfq = checkedcontacts.toString();
-
-                Toast.makeText(SelectFromContactsActivity.this, dfq, Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(SelectFromContactsActivity.this,SendInvitesActivity.class);
-                intent.putExtra("abc", checkedcontacts.toString());
-                startActivity(intent);
-
-            }
-        });
+                });
 
     }
 
@@ -98,7 +104,7 @@ public class SelectFromContactsActivity extends ActionBarActivity {
         newValues.put(recipientsDB.COLUMN_RECIPIENT_LASTNAME, rlastname);
 
         db.insert(recipientsDB.DATABASE_TABLE, null, newValues);
-        System.out.println("Saved in Recipients Table" + rusername);
+        //System.out.println("Saved in Recipients Table" + rusername);
 
     }
 
@@ -184,7 +190,7 @@ public class SelectFromContactsActivity extends ActionBarActivity {
 
         public void setChecked(int position, boolean isChecked) {
             myCheckStates.put(position, isChecked);
-            System.out.println("hello...........");
+            //System.out.println("hello...........");
             notifyDataSetChanged();
         }
 

@@ -23,8 +23,8 @@ public class SettingsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_settings);
 
 
-        Menus = new String[] {" Profile", " Notifications"," Location Settings"," Groups",
-                "Preferences","View Invites"};
+        Menus = new String[] {"Edit Profile", " Notifications"," Location Settings"," Groups",
+                "Preferences","View Messages"};
         menuList = (ListView) findViewById(R.id.listView);
         menuListAdapter = new settingsMenuListAdapter(this, Menus);
 
@@ -38,8 +38,8 @@ public class SettingsActivity extends ActionBarActivity {
                 switch (position) {
                     case 0:
 
-                        Intent enterProfile = new Intent(SettingsActivity.this, ProfileActivity.class);
-                        startActivity(enterProfile);
+                        Intent enterEditProfile = new Intent(SettingsActivity.this, EditProfileActivity.class);
+                        startActivity(enterEditProfile);
 
                         break;
 

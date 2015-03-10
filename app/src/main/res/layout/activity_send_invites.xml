@@ -23,7 +23,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:contentDescription="@string/usersPhotoDescriptionString"
-                android:onClick="enterProfile"/>
+                android:onClick="enterEditProfile"/>
 
             <ImageView
                 android:layout_width="50dp"
@@ -31,7 +31,7 @@
                 android:id="@+id/usersAvailabilityStatusColor"
                 android:layout_below="@id/usersPhotoImageView"
                 android:contentDescription="@string/usersAvailabilityStatusColorString"
-                android:onClick="enterProfile"/>
+                android:onClick="enterEditProfile"/>
 
 
             <TextView
@@ -43,7 +43,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@id/usersPhotoImageView"
-                android:onClick="enterProfile"/>
+                android:onClick="enterEditProfile"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/usersPhotoImageView"
                 android:layout_toEndOf="@+id/usersPhotoImageView"
-                android:onClick="enterProfile"/>
+                android:onClick="enterEditProfile"/>
 
             <ImageView
                 android:layout_width="40dp"

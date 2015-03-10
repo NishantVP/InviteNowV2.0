@@ -80,38 +80,11 @@ public class startScreenActivity extends ActionBarActivity {
             settings.edit().putBoolean("my_first_time", false).commit();
         }
 
-
         username = (EditText)findViewById(R.id.usernameEditText);
         password = (EditText)findViewById(R.id.passwordEditText);
         LoginButton = (Button)findViewById(R.id.loginButton);
         SignUpButton = (Button)findViewById(R.id.signUpButton);
         LoginProgress = (TextView)findViewById(R.id.LoginProgress);
-
-
-        /*
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "nOjQbfKBEdY3A2rYAM5JmhPITjtO4A1DJeJq7iD1",
-                "3LHhgD5smXqrZmkSVbjU4RWMsuDfrinANHjR3YU5");
-        */
-
-        //ParseACL defaultACL = new ParseACL();
-        // Optionally enable public read access by default.
-        // defaultACL.setPublicReadAccess(true);
-        //ParseACL.setDefaultACL(defaultACL, true);
-        //ParseUser.enableAutomaticUser();
-
-        /*
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar1");
-        testObject.saveInBackground();
-        */
-/*
-        SQLiteDatabase db = new userDB(this).getWritableDatabase();
-        tableInMemory = isTableExists(db,userDB.DATABASE_TABLE);
-        if(!tableInMemory) {
-            saveUserToSQLite("sample user", "sample password");
-        }*/
 
         readFromDB();
         deleteall();
@@ -156,7 +129,9 @@ public class startScreenActivity extends ActionBarActivity {
             dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    LoginProgress.setText("Please turn on your location First");
                     dialog.cancel();
+
                 }
             });
 
@@ -189,44 +164,14 @@ public class startScreenActivity extends ActionBarActivity {
 
                     } else {
                         // Signup failed. Look at the ParseException to see what happened.
-                        Toast.makeText(getApplicationContext(), passwordCheck,
-                                Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), passwordCheck,
+                        //        Toast.LENGTH_SHORT).show();
                         LoginButton.setEnabled(true);
                         SignUpButton.setEnabled(true);
                     }
                 }
             });
         }
-       /* ParseQuery<ParseObject> query = ParseQuery.getQuery("User");
-        query.whereEqualTo("username", usernameCheck);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            public void done(ParseObject object, ParseException e) {
-                if (object == null) {
-                    //Log.d("score", "The getFirst request failed.");
-                    Toast.makeText(getApplicationContext(), usernameCheck,
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    //Log.d("score", "Retrieved the object.");
-                    Toast.makeText(getApplicationContext(), "Login Success",
-                            Toast.LENGTH_SHORT).show();
-                    Intent enterSendInvites2 = new Intent(startScreenActivity.this, SendInvitesActivity.class);
-                    startActivity(enterSendInvites2);
-                }
-            }
-        });
-        */
-        /*
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> scoreList, ParseException e) {
-                if (e == null) {
-                    Log.d("score", "Retrieved " + scoreList.size() + " scores");
-                } else {
-                    Log.d("score", "Error: " + e.getMessage());
-                }
-            }
-        });
-        */
-
 
     }
 
@@ -255,23 +200,6 @@ public class startScreenActivity extends ActionBarActivity {
                 if (user != null) {
                     // Hooray! The user is logged in.
 
-                    /*
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("UserData");
-                    query.whereEqualTo("UserID", "4085655184");
-                    query.getFirstInBackground(new GetCallback<ParseObject>() {
-                        public void done(ParseObject object, ParseException e) {
-                            if (object == null) {
-                                Log.d("score", "The getFirst request failed.");
-                            } else {
-                                Log.d("score", "Retrieved the object.");
-                                ParseUserDataObjID = object.getString("objectId");
-                                Firstname = object.getString("FirstName");
-                                Lastname = object.getString("LastName");
-                                EmailID = object.getString("Email");
-                            }
-                        }
-                    });
-                    */
                     getFromParse();
                     //saveUserToSQLite(usernameString, passwordString);
 
@@ -296,8 +224,8 @@ public class startScreenActivity extends ActionBarActivity {
         //String delete = "TRUNCATE FROM tweets";
         //db.rawQuery(delete, null);
         db.delete("Friends",null,null);
-        Toast.makeText(getApplicationContext(), "Database Table cleared Deleted",
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Database Table cleared Deleted",
+        //        Toast.LENGTH_SHORT).show();
     }
 
     public void deleteallRecipients(){
@@ -306,8 +234,8 @@ public class startScreenActivity extends ActionBarActivity {
         //String delete = "TRUNCATE FROM tweets";
         //db.rawQuery(delete, null);
         db.delete("Recipients",null,null);
-        Toast.makeText(getApplicationContext(), "Recipients Cleared",
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Recipients Cleared",
+        //        Toast.LENGTH_SHORT).show();
     }
 
     public void getFromParse()
@@ -395,13 +323,8 @@ public class startScreenActivity extends ActionBarActivity {
         newValues.put(userDB.COLUMN_LASTNAME, Lastname);
         newValues.put(userDB.COLUMN_EMAIL, EmailID);
 
-        //-----For Debug-----//
-        // newValues.put(NotesDB.NAME_COLUMN, path);
-        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
-        //-----For Debug-----//
-
         db.insert(userDB.DATABASE_TABLE, null, newValues);
-        Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Saved in DataBase", Toast.LENGTH_SHORT).show();
     }
 
     public void saveUserToSQLiteOnLogin(String usernameDB, String passwordDB, String ObjID,String Firstname) {
@@ -414,37 +337,15 @@ public class startScreenActivity extends ActionBarActivity {
         newValues.put(userDB.COLUMN_LASTNAME, Lastname);
         newValues.put(userDB.COLUMN_EMAIL, EmailID);
 
-        //-----For Debug-----//
-        // newValues.put(NotesDB.NAME_COLUMN, path);
-        //newValues.put(NotesDB.FILE_PATH_COLUMN, caption);
-        //-----For Debug-----//
-
         db.insert(userDB.DATABASE_TABLE, null, newValues);
         //System.out.println("Firstname : " +Firstname);
-        Toast.makeText(getApplicationContext(), "Saved in DataBase Obj" +ObjID , Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Saved in DataBase Obj" +ObjID , Toast.LENGTH_SHORT).show();
     }
 
 
     private void readFromDB() {
         SQLiteDatabase db = new userDB(this).getWritableDatabase();
-        /*
-        String where = null;
-        String whereArgs[] = null;
-        String groupBy = null;
-        String having = null;
-        String order = null;
-        String[] resultColumns = {userDB.COLUMN_ID, userDB.COLUMN_USERNAME, userDB.COLUMN_PASSWORD};
-        Cursor cursor = db.query(userDB.DATABASE_TABLE, resultColumns, where, whereArgs,
-                groupBy, having, order);
-        while (cursor.moveToNext()) {
-            int idInDB = cursor.getInt(cursor.getColumnIndex(userDB.COLUMN_ID));
-            if (clickedUserID + 1 == idInDB) {
-                usernameCheck = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_USERNAME));
-                passwordCheck = cursor.getString(cursor.getColumnIndex(userDB.COLUMN_PASSWORD));
-                break;
-            }
-        }
-        */
+
         Cursor cursor = db.rawQuery("Select * from  User", null);
         int number = cursor.getCount();
         if(number <= 0)

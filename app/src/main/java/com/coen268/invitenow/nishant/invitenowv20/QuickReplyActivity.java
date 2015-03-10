@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -43,7 +44,7 @@ public class QuickReplyActivity extends ActionBarActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         String jsonData = extras.getString( "com.parse.Data" );
-        System.out.println(jsonData);
+        //System.out.println(jsonData);
 
          message= "Not Known";
         try {
@@ -58,11 +59,11 @@ public class QuickReplyActivity extends ActionBarActivity {
         }
 
         if(message!="Not Known") {
-            System.out.println(message);
-            saveMessageToSQLite(message);
+            //System.out.println(message);
+            //saveMessageToSQLite(message);
             sender = message.substring(0,Math.min(message.length(),10));
             MessageView.setText(message);
-            System.out.println("Sender: " +sender);
+            //System.out.println("Sender: " +sender);
         }
         boolean isThisReply = sender.equals("Reply from");
         if(isThisReply == true )
@@ -74,12 +75,12 @@ public class QuickReplyActivity extends ActionBarActivity {
             Yes.setEnabled(false);
             No.setEnabled(false);
             Later.setEnabled(false);
-            System.out.println("Should have been Disabled");
-
+            //System.out.println("Should have been Disabled");
 
         }
 
         senderChannel = "ch"+sender;
+        saveMessageToSQLite(message);
 
     }
 
@@ -115,7 +116,7 @@ public class QuickReplyActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(data);
+        //System.out.println(data);
 
         ParseQuery pushQuery = ParseInstallation.getQuery();
         pushQuery.whereEqualTo("channels", senderChannel);
@@ -130,6 +131,12 @@ public class QuickReplyActivity extends ActionBarActivity {
 
         //push.setData(data);
         push.sendInBackground();
+
+        Toast.makeText(getApplicationContext(), "Response Sent: Yes ", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
 
     }
 
@@ -144,7 +151,7 @@ public class QuickReplyActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(data);
+        //System.out.println(data);
 
         ParseQuery pushQuery = ParseInstallation.getQuery();
         pushQuery.whereEqualTo("channels", senderChannel);
@@ -159,7 +166,11 @@ public class QuickReplyActivity extends ActionBarActivity {
 
         //push.setData(data);
         push.sendInBackground();
+        Toast.makeText(getApplicationContext(), "Response Sent: No ", Toast.LENGTH_SHORT).show();
 
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 
 
@@ -172,7 +183,7 @@ public class QuickReplyActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(data);
+        //System.out.println(data);
 
         ParseQuery pushQuery = ParseInstallation.getQuery();
         pushQuery.whereEqualTo("channels", senderChannel);
@@ -187,6 +198,11 @@ public class QuickReplyActivity extends ActionBarActivity {
 
         //push.setData(data);
         push.sendInBackground();
+        Toast.makeText(getApplicationContext(), "Response Sent:  After sometime ", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 
     @Override

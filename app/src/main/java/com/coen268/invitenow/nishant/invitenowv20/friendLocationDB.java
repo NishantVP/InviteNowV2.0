@@ -17,9 +17,6 @@ public class friendLocationDB extends SQLiteOpenHelper {
     public static final String COLUMN_FRIEND_FIRSTNAME = "FRIEND_FIRSTNAME";
     public static final String COLUMN_FRIEND_LASTNAME = "FRIEND_LASTNAME";
     public static final String COLUMN_FRIEND_EMAIL = "FRIEND_EMAIL";
-    //public static final String COLUMN_FRIEND_NEARBY_COUNT = "FRIEND_NEARBY_COUNT";
-    //public static final String COLUMN_FRIEND_YES_COUNT = "FRIEND_YES_COUNT";
-
 
     public static final String DATABASE_TABLE = "Friends";
     public static final int DATABASE_VERSION = 1;
@@ -29,20 +26,6 @@ public class friendLocationDB extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + DATABASE_TABLE;
 
 
-    /*
-    private static final String DATABASE_CREATE = String.format(
-            "CREATE TABLE %s (" +
-                    "  %s integer primary key autoincrement, " + " %s text,"+
-                    "  %s text," + " %s text," + " %s text,"+ " %s text,"+
-                    "  %s text)",
-            DATABASE_TABLE, COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD,COLUMN_PARSE_OBJECT_ID,
-            COLUMN_FIRSTNAME,COLUMN_LASTNAME,COLUMN_EMAIL );
-    */
-
-    /* private static final String DATABASE_CREATE = "create table "
-             + "(" + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_COMMENT
-             + " text not null);";
- */
     private static final String DATABASE_CREATE = "CREATE TABLE "
             + DATABASE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_FRIEND_USERNAME
             + " TEXT," + COLUMN_FRIEND_LAT + " TEXT," + COLUMN_FRIEND_LNG + " TEXT,"

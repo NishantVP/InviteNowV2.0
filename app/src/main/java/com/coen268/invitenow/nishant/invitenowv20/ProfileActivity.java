@@ -49,15 +49,7 @@ public class ProfileActivity extends ActionBarActivity {
     }
 
     public void imageLoad(){
-
-//        SQLiteDatabase db = new PhotoDB(this).getWritableDatabase();
-//        String[] result = {PhotoDB.UID,PhotoDB.PIC_FILEPATH};
-//
-//        Cursor cursor = db.query(PhotoDB.TABLE_NAME,result,null,null,null,null,null);
-//        cursor.moveToLast();
-//        filepath = cursor.getString(1);
-
-        Toast.makeText(ProfileActivity.this,"Path:" +filepath,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ProfileActivity.this,"Path:" +filepath,Toast.LENGTH_SHORT).show();
         imgFile = new File(filepath);
         String str= imgFile.getAbsolutePath();
         Log.d("***** error***",str);
@@ -67,7 +59,7 @@ public class ProfileActivity extends ActionBarActivity {
         usersPhoto.setImageBitmap(bitmap);
     }
 
-    public void enterEditProfile(View view) {
+    public void enterEditProfile2(View view) {
         Intent enterEditProfile = new Intent(this, EditProfileActivity.class);
         startActivity(enterEditProfile);
     }

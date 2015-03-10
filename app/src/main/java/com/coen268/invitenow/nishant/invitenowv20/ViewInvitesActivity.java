@@ -15,6 +15,8 @@ import android.widget.ListView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 public class ViewInvitesActivity extends ActionBarActivity {
@@ -31,31 +33,10 @@ public class ViewInvitesActivity extends ActionBarActivity {
 
         MessageListView=(ListView)findViewById(R.id.messageListView);
         readFromMessageDB();
+        Collections.reverse(messageList);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.message_list_item,messageList);
         MessageListView.setAdapter(adapter);
-        /*
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        String jsonData = extras.getString( "com.parse.Data" );
-        System.out.println(jsonData);
 
-        String message = "Not Known";
-        try {
-
-            JSONObject obj = new JSONObject(jsonData);
-
-            Log.d("My App", obj.toString());
-            message = obj.getString("alert");
-
-        } catch (Throwable t) {
-            Log.e("My App", "Could not parse malformed JSON: \"" + jsonData + "\"");
-        }
-
-        if(message!="Not Known") {
-            System.out.println(message);
-            saveMessageToSQLite(message);
-        }
-        */
     }
 
 
@@ -87,9 +68,6 @@ public class ViewInvitesActivity extends ActionBarActivity {
 
             String message = cursor.getString(cursor.getColumnIndex(invitesDB.COLUMN_MESSAGE));
 
-            /* For Debug */
-            //String name = cursor.getString(cursor.getColumnIndex(NotesDB.COLUMN_FRIEND_FIRSTNAME));
-            /* For Debug */
             if(!messageList.contains(message)) {
                 Messages[i]=message;
                 messageList.add(message);
