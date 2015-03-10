@@ -78,27 +78,6 @@
         android:layout_below="@id/profileInfoRelativeLayout"
         android:layout_marginTop="10dp"
         >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/inTextViewString"
-                android:id="@+id/inTextView"
-                android:layout_below="@id/meetSubject"
-                android:layout_margin="20dp"
-                android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:text="Receipents - "
-            android:id="@+id/testingTextView"
-            android:layout_alignTop="@id/button"
-            android:layout_toLeftOf="@id/button"
-            android:layout_alignParentStart="true"
-             />
-
         <Button
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -108,8 +87,37 @@
             android:layout_marginTop="20dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-             />
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:text="Receipents - "
+            android:id="@+id/testingTextView"
+            android:layout_alignTop="@id/button"
+            android:layout_toLeftOf="@id/button"
+            android:layout_alignParentStart="true"
+            />
 
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/meetSubject"
+            android:hint="@string/meetSubjectHintString"
+            android:layout_below="@id/testingTextView"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/inTextViewString"
+                android:id="@+id/inTextView"
+                android:layout_below="@id/meetSubject"
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true" />
 
         <Button
             android:layout_width="100dp"
@@ -133,15 +141,6 @@
             android:onClick="enterSelectNearbyFriends"
             />
 
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/meetSubject"
-            android:hint="@string/meetSubjectHintString"
-            android:layout_below="@id/testingTextView"
-            android:layout_marginTop="15dp"
-            />
 
     </RelativeLayout>
 

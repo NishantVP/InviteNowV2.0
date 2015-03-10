@@ -929,7 +929,25 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
     @Override
     protected void onResume ()
     {
+        super.onResume();
         processRecipients();
+        TestingTextView.setText
+                ("Recipients -" +
+                "Via App: " +RecipientsViaApp +"." +
+                 "Via SMS: " +RecipientsViaSMS);
+    }
+    @Override
+    protected void onStop() {
+
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+
+        super.onDestroy();
     }
 
     @Override
