@@ -1,5 +1,6 @@
 package com.coen268.invitenow.nishant.invitenowv20;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -394,7 +396,7 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
         if(NoObjID==true)
         {
-            status.setText("");
+            status.setText("Touch to update");
         }
         else
         {
@@ -938,10 +940,16 @@ public class SendInvitesActivity extends ActionBarActivity  implements GoogleApi
 
 
     public void enterEditProfile(View view) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        {
+            recreate();
+        }
         getNearbyLocationFromParse();
         Intent enterEditProfile = new Intent(this, EditProfileActivity.class);
         startActivity(enterEditProfile);
     }
+
 
 
     @Override

@@ -168,6 +168,7 @@ public class startScreenActivity extends ActionBarActivity {
                         //        Toast.LENGTH_SHORT).show();
                         LoginButton.setEnabled(true);
                         SignUpButton.setEnabled(true);
+                        LoginProgress.setText("Please Login / Sign up");
                     }
                 }
             });
